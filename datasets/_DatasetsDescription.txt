@@ -1,0 +1,33 @@
+***************************************************************************
+****      Datasets included in the Synaptus Matlab/Octave Toolbox      ****
+***************************************************************************
+
+Last updated:
+2016-01-03 Martin H. Skjelvareid - initial version
+
+GENERAL NAMING CONVENTIONS
+'ptxy'  - p(t,x,y) and variations. Ultrasonic data matrix, 2D or 3D.
+'fs'    - sampling frequency [Hz]
+'fc'    - transducer center frequency [Hz]
+'fLow'  - Lower transducer cutoff frequency [Hz]
+'fHigh' - Upper transducer cutoff frequency [Hz]
+'cc'    - compressional wave velocity [m/s] (vector for multi-layer experiments)
+'thick' - thickness of each layer in the measurement geometry
+'xStep' - distance between spatial measurements (also yStep, phiStep etc.)
+
+
+DATASETS:
+"LineScan2D_WireTargets.mat"
+A 2D linear scan of four steel wire targets in water, using a 1.5 MHz immersion transducer. The dataset is simple, with a large depth range (150 mm between closest and furthest target), making it useful for testing single-layer 2D focusing algorithms.
+
+"LineScan2D_PinsPlexiAluSDH.mat"
+A 2D linear scan of a three-layered structure; four steel pins in water, four side-drilled holes in an acrylic glass block, and four side-drilled holes in an aluminium block. The large differences in wave velocities between the three media makes the dataset useful for testing 2D multi-layer focusing algorithms. The dataset is described in detail in section 4.5.1 in the attached PhD thesis by M.H. Skjelvareid.
+
+"PlaneScan3D_PlexiAluFBH.mat"
+A 3D planar scan of a three-layered structure; water (no targets), acrylic glass (four bottom-drilled holes), aluminium (four bottom-drilled holes). The bottom-drilled holes essentially act as point scatterers. The dataset is useful for testing 3D multi-layer focusing algorithms. The dataset is described in detail in section 5.2 in the attached PhD thesis by M.H. Skjelvareid.
+
+"CylScan3D_LeadSpheres.mat"
+A 3D outwardly directed cylindrical scan of small lead spheres suspended in water by thin nylon wires, acting as point scatterers. A "slice" from the dataset can also be extracted to obtain an example 2D circular scan. The dataset is simple, with a large depth range, and is useful for testing single-layer 3D focusing algorithms for cylindrical scans. The dataset is described in detail in section 6.3 in the attached PhD thesis by M.H. Skjelvareid.
+
+"CylScan3D_ObjectsInPipe.mat"
+A 3D outwardly directed cylindrical scan of a selection of objects placed in the bottom of a pipe, with the scanning surface was centered in the pipe. The dataset was made to demonstrate how CPSM could be used for imaging complex objects. As a curiosity, the scanner was actually a Lego Mindstorm NXT robot controlled from Matlab. The dataset is described in detail in section 7.A.1 in the attached PhD thesis by M.H. Skjelvareid.
