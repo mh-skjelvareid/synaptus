@@ -59,7 +59,7 @@ nFFTt = 2^nextpow2(nT);                     % FFT size, time
 nFFTx = 2^nextpow2(nX);                     % FFT size, x
 nFFTz = 2^nextpow2(nT*(fHigh-fLow)/(fs/2));
 
-omega = ((0:(nFFTt-1)) - floor(nFFTt/2))'*((2*pi*fs)/nFFTt);    % Freq. vactor
+omega = ((0:(nFFTt-1)) - floor(nFFTt/2))*((2*pi*fs)/nFFTt);     % Freq. vactor
 omega = ifftshift(omega);                                       % Shift as fft
 omegaBandInd = (omega <= -2*pi*fLow) & (omega >= -2*pi*fHigh);  % Transd. band
 omegaBand = omega(omegaBandInd);
@@ -116,9 +116,9 @@ Pokx = Pokx.*exp(-1i*OMEGA*tDelay);
 %% Calculate new spectrum coordinates
 [KZ_st,KX_st] = ndgrid(kz,kx);
 KK2_st = (KZ_st.^2 + KX_st.^2);                     % KK^2
-KK_st = -sqrt(KK2_st .* (KK2_st > 0));      % Calc. KK with square root
+KK_st = -sqrt(KK2_st .* (KK2_st > 0));              % KK, correspond to neg. om.
 
-Akzkx = 1./(1 + (KX_st.^2)./KZ_st.^2);            % Scale factor
+Akzkx = 1./(1 + (KX_st.^2)./KZ_st.^2);              % Scale factor
 Akzkx(isnan(Akzkx)) = 1;
 
 OMEGA_st = (cc/2)*KK_st;                % New omega coord. for interplation
