@@ -1,43 +1,43 @@
 function varargout = mulok(ptxy,fs,tDelay,cc,thick,fLow,fHigh,sss,varargin)
 % MULOK - Multi-Layer Omega-K algorithm for synthetic aperture ultrasound
 %
-%    Usage:
-%    [im,...] = mulok(ptxy,fs,tDelay,cc,thick,fLow,fHigh,xStep,yStep,...)
+%   Usage:
+%   [im,...] = mulok(ptxy,fs,tDelay,cc,thick,fLow,fHigh,xStep,yStep,...)
 %
-%    Input parameters:
-%   ptxy        -    2D or 3D ultrasonic data, dimensions (t,x) or (t,x,y)
-%    fs            -    Sampling frequency [Hz]
-%    tDelay        -    Time delay between pulse transmission and measurement [s]
-%    cc            -    Vector of compressional wave velocities for each layer [m/s]
-%    thick        -    Vector of thickness for each layer [m/s]
+%   Input parameters:
+%   ptxy        -   2D or 3D ultrasonic data, dimensions (t,x) or (t,x,y)
+%   fs          -   Sampling frequency [Hz]
+%   tDelay      -   Time delay between pulse transmission and measurement [s]
+%   cc          -   Vector of comp. wave velocities for each layer [m/s]
+%   thick       -   Vector of thickness for each layer [m/s]
 %                   (set last boundary equal to end of ROI)
-%    fLow        -    Lower limit of transducer frequency band [Hz]
-%    fHigh        -    Higher limit of transducer frequency band [Hz]
-%    sss            -    spatial step size(s) (distance between measurements) [m]
-%                   2D data: [xStep] - 3D data: [xStep,yStep]
+%   fLow        -   Lower limit of transducer frequency band [Hz]
+%   fHigh       -   Higher limit of transducer frequency band [Hz]
+%   sss         -   spatial step size(s) (distance between measurements) [m]
+%                  2D data: [xStep] - 3D data: [xStep,yStep]
 %
-%    Optional parameter-value input pairs:
+%   Optional parameter-value input pairs:
 %   interpol    -   Interpolation method for Stolt resampling of spectrum
 %                   'linear' - linear resampling (see interp1)
 %                   'chirpz' - faster resampling based on linear approximation
 %                              of resampling coordinates and Chirp-Z transform
 %   fc          -   Transducer center frequency [Hz]. Used in Chirp-Z trans.
 %                   Default: mean([fLow,fHigh])
-%    tFftMult    -    multiplier for t-axis FFT size. Default: 1
-%    xFftMult    -    multiplier for x-axis FFT size. Default: 1
-%    yFftMult    -    multiplier for y-axis FFT size. Default: 1
-%    zFftMult    -    multiplier for z-axis FFT size. Default: 1
-%    upSamp      -    omega upsampling factor (preproc. before interp.) Default: 4
+%   tFftMult    -   multiplier for t-axis FFT size. Default: 1
+%   xFftMult    -   multiplier for x-axis FFT size. Default: 1
+%   yFftMult    -   multiplier for y-axis FFT size. Default: 1
+%   zFftMult    -   multiplier for z-axis FFT size. Default: 1
+%   upSamp      -   omega upsamp. factor (preproc. before interp.) Default: 4
 %                   Used only for linear interpolation
-%    hh            -    Transd. imp. res., for matched filt. Default: 1 (no filt.)
-%    xStart        -    First x value in "xIm" output [m]
-%    yStart        -    First y value "yIm" output [m]
+%   hh          -   Transd. imp. res., for matched filt. Default: 1 (no filt.)
+%   xStart      -   First x value in "xIm" output [m]
+%   yStart      -   First y value "yIm" output [m]
 %
-%    Output parameters (varargout):
-%    im            -    Reconstructed image as cell array - one cell per layer
-%    xIm            -    x positions for pixels in im
-%   yIm         -    y positions for pixels in im
-%    zIm            -    z positions for pixels in im
+%   Output parameters (varargout):
+%   im          -   Reconstructed image as cell array - one cell per layer
+%   xIm         -   x positions for pixels in im
+%   yIm         -   y positions for pixels in im
+%   zIm         -   z positions for pixels in im
 %                   (cell array, different z res. for each layer)
 %
 %   Note: The z resolution of the output image for layer l is set to
@@ -197,7 +197,7 @@ im = cell(nL,1);        % Preallocate cell structure for each layer image
 zIm = cell(nL,1);       % Preallocate cell structure for corresponding z axis
 
 for ii = 1:nL
-    disp(['Processing layer ' num2str(ii) ' of ' num2str(nL)]); fflush(stdout);
+    disp(['Processing layer ' num2str(ii) ' of ' num2str(nL)]);
 
     if strcmp(param.interpol,'linear')
         %%%%%%%%  REGULAR STOLT RESAMPLING (LINEAR INTERPOLATION) %%%%%%%%

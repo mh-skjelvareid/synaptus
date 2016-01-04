@@ -202,7 +202,6 @@ for ii = 1:nL
         planeCount = planeCount + 1;
         if ~mod(planeCount,25)                          % Progress information
             fprintf('\b\b\b\b%3d%%', round((planeCount*100)/nZ));
-            fflush(stdout);
         end
     end
 

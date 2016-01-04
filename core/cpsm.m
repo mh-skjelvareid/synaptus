@@ -185,12 +185,10 @@ for ii = 1:nR
 
     if not(mod(ii,ceil(nR/20)))                     % Update progress
         disp([num2str(ii) ' of ' num2str(nR) ' image ranges processed.'])
-        fflush(stdout);                             % Display immediately
     end
 end
 
 disp('All image ranges processed')
-fflush(stdout);
 
 %% Output
 varargout{1} = im;
