@@ -48,3 +48,7 @@ previous/test_polMultiLayerImage.m
 previous/test_polRawDataImage.m
 
 previous/test_psm2d.m
+
+prelim/datasets/PlaneScan3D_PlexiAluFBH_old.mat
+
+prelim/datasets/LineScan2D_PinsPlexiAluSDH_old.mat
