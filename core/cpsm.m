@@ -69,9 +69,10 @@ function varargout = cpsm(ptpz,fs,tDelay,cc,fLow,fHigh,sss,r0,...
 %% Parse optional input arguments
 p = inputParser;                                    % Create input parser
 validator = @(str) any(strcmp(str,{'haun','gardner','exact'}));
-p.addParamValue('transFunc','haun',validator);        % Multiplier X-dim FFT size
-p.parse(varargin{:});                                % Parse param.-value pairs
-param = p.Results;                                    % Transfer res. to structure
+p.addParamValue('transFunc','haun',validator);      % Migration transfer func.
+p.addParamValue('tFftMult',1);                      % Multip. FFT in t dir.
+p.parse(varargin{:});                               % Parse param.-value pairs
+param = p.Results;                                  % Transfer res. to structure
 clear p
 
 %% Dimension testing (2D is a special case)
@@ -95,10 +96,9 @@ end
 rr = rStart:rStep:rEnd;
 nR = length(rr);
 
-% nFFTt = 2*2^nextpow2(nT);         % FFT size time
-nFFTt = 2^nextpow2(nT);             % FFT size time
-nFFTn = 2^nextpow2(nPhi);           % FFT size phi
-nFFTz = 2^nextpow2(nZ);             % FFT size z
+nFFTt = param.tFftMult*2^nextpow2(nT);  % FFT size time
+nFFTn = 2^nextpow2(nPhi);               % FFT size phi
+nFFTz = 2^nextpow2(nZ);                 % FFT size z
 
 %% Fourier transform
 if dataIs3D

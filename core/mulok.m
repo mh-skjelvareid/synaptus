@@ -297,7 +297,7 @@ for ii = 1:nL
         end
 
         % Inverse transform
-        pzxy = ifftn(flipud(Pkzkxky));
+        pzxy = ifftn(flip(Pkzkxky,1));
 
     end
 
