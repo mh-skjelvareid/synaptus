@@ -9,7 +9,7 @@ The toolbox was made and published with the intention of sharing and collaborati
 
 
 COLLABORATION VIA GITHUB
-The toolbox is distributed as a repository on GitHub. If you have comments or suggestions for improvements, you can contact Martin directly via martin.hansen.skjelvareid[a]gmail.com. If you want to contribute code, download the toolbox using Git, make a branch where you can do changes, and open a pull request to add the changes to the "master" branch.
+The toolbox is distributed as a repository on GitHub. If you have comments or suggestions for improvements, you can create an issue (see https://guides.github.com/features/issues/ ) or contact Martin directly via martin.hansen.skjelvareid[a]gmail.com. If you want to contribute code, download the toolbox using Git, make a branch where you can do changes, and open a pull request to add the changes to the "master" branch.
 
 
 ADDING NEW ALGORITHMS
@@ -23,3 +23,9 @@ STYLE GUIDELINES
 - Structure the code using Matlab cells ('%%') for larger sections of code, and "headline" comments ('%') above smaller sections of code, also separated with a single empty line. Use comments directly behind code lines where extra clarification is necessary. Try
 - Keep code text width below 80 characters (standard coding width). Break lines using '...' if necessary.
 - White space: Convert tabs to spaces, to keep formatting consistent across editors (may have different tab spacing).
+- Name the different versions of the ultrasonic data matrix in a way which indicates the dimensions of the different axes, and use large caps for the initial letter for matrices where one or more dimensions are in the Fourier domain. Examples:
+    Code variable          Represents wave field
+    ptxy                   p(t,x,y)
+    Poxy                   P(omega,x,y)
+    Pokxky                 P(omega,k_x,k_y)
+    Pkxky_t0               P(t=0,k_x,k_y)

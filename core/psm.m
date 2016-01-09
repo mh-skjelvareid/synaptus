@@ -69,11 +69,11 @@ function varargout = psm(ptxy,fs,tDelay,cc,thick,fLow,fHigh,sss,varargin)
 %    sampled wavefield is used. A short explanation of the code notation is
 %    included here to make reading of the code easier.
 %
-%    Code variable            Represents wave field
-%    ptxy                    p(t,x,y)
-%    Poxy                    P(omega,x,y)
-%    Pokxky                    P(omega,k_x,k_y)
-%    Pkxky_t0                P(t=0,k_x,k_y)
+%    Code variable          Represents wave field
+%    ptxy                   p(t,x,y)
+%    Poxy                   P(omega,x,y)
+%    Pokxky                 P(omega,k_x,k_y)
+%    Pkxky_t0               P(t=0,k_x,k_y)
 
 
 %% Parse optional input arguments
