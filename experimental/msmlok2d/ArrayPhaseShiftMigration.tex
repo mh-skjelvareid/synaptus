@@ -1,0 +1,313 @@
+\documentclass{article}%
+\usepackage{amsmath}%
+\usepackage{amsfonts}%
+\usepackage{amssymb}%
+\usepackage{graphicx}
+\usepackage{parskip}
+\usepackage{subfigure}
+\usepackage{url}
+\usepackage[bf,small,hang]{caption}
+%\usepackage[pdftex]{hyperref}
+\usepackage{listings}
+\usepackage{bm}
+%\usepackage{mathtools}
+
+%-------------------------------------------
+
+\begin{document}
+\title{Array frequency domain migration test}
+\author{Martin H. Skjelvareid}
+\date{\today}
+\maketitle
+
+\section{$\omega-k$ extrapolation of source-receiver wavefield}
+\label{sec:GeneralDerivation}
+The following derivation largely follows that of Margrave in \cite{Margrave2003}, although Margraves derivation is limited to the ``exploding reflector'' scenario.
+
+Assume that a source is located in position $(x_s,z_s)$, and a receiver in position $(x_r,z_r)$. The wavefield at the receiver is denoted by $p(x_s,z_s,x_r,z_r,t)$, where $t$ denotes time. Imagine now that the wave from the source reaches a scatterer, and that this scatterer becomes a secondary source, which emits a wave that reaches the receiver. This case is illustrated in figure \ref{fig:SimpleSourceScattererReceiver}.
+\begin{figure}
+	\centering
+		\includegraphics{Figures/SimpleSourceScattererReceiver.pdf}
+	\caption{A wave is emitted from a source and reflected by a point scatterer towards a receiver}
+	\label{fig:SimpleSourceScattererReceiver}
+\end{figure}
+
+
+The emitted wave is identified by a propagation vector $\bm{k}_s = [k_{xs}, k_{zs}]$, and the reflected wave has a propagation vector $\bm{k}_r = [k_{xr},k_{zr}]$.   
+
+The field can be decomposed in terms of the $k_x$ wavenumbers and the $\omega$ frequency components. The original field can then be written as an inverse transform:
+\begin{equation}
+	p(x_s,z_s,x_r,z_r,t) = \iiint P(k_{xs},z_s,k_{xr},z_r,\omega) 
+		\cdot e^{i\left(-ik_{xs}x_s -ik_{xr}x_r +i\omega t \right)} \ dk_{xs} dk_{xr} d\omega
+\label{eq:inverseTransformedField}
+\end{equation}
+
+The wavefield $p$ has to fulfill two separate wave equations, as stated by Stolt \cite{Stolt1978}:
+\begin{equation}
+	\left[\frac{\partial^2}{\partial x_s^2} + \frac{\partial^2}{\partial z_s^2} - 
+		\frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right] p(x_s,z_s,x_r,z_r,t)  = 0
+\label{eq:waveEqS}
+\end{equation}
+\begin{equation}
+	\left[\frac{\partial^2}{\partial x_r^2} + \frac{\partial^2}{\partial z_r^2} - 
+		\frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right] p(x_s,z_s,x_r,z_r,t)  = 0
+\label{eq:waveEqR}
+\end{equation}
+which are the wave equations for the emitted and reflected waves, respectively. 
+
+Let us first concentrate on equation \ref{eq:waveEqR}, corresponding to the reflected waves. This equation can be brought into the integral of equation \ref{eq:inverseTransformedField}, yielding
+
+\begin{multline}
+	\iiint \left[\frac{\partial^2}{\partial x_r^2} + \frac{\partial^2}{\partial z_r^2} - 
+		\frac{1}{c^2} \frac{\partial^2}{\partial t^2} \right] 
+		P(k_{xs},z_s,k_{xr},z_r,\omega) \quad \ldots \\
+		e^{i\left(-ik_{xs}x_s -ik_{xr}x_r +i\omega t \right)} \ dk_{xs} dk_{xr} d\omega = 0
+\end{multline}
+
+The derivatives with regard to $x_r$ and $t$ are easily found from the complex exponential
+\begin{multline}
+	\iiint \left\{ \left[\frac{\partial^2}{\partial z_r^2} - k_{xr}^2 + \frac{\omega^2}{c^2} \right] 
+		P(k_{xs},z_s,k_{xr},z_r,\omega) \right\} \quad \ldots \\
+		e^{i\left(-ik_{xs}x_s -ik_{xr}x_r +i\omega t \right)} \ dk_{xs} dk_{xr} d\omega = 0
+\label{eq:}
+\end{multline}
+Note that the above expression is equal to the Fourier transform of the expression within the curly braces. The right side of the equation states that this transform should be zero, therefore the expression within the curly braves should also be zero. This is a consequence of the uniqueness property of the Fourier transform \cite{Margrave2003}. Thus, we are left with the following expression:
+
+\begin{equation}
+	\left[\frac{\partial^2}{\partial z_r^2} + k_{zr}^2 \right] 
+		P(k_{xs},z_s,k_{xr},z_r,\omega) = 0
+\label{eq:Pzr}
+\end{equation}
+where $k_{zr}^2$ is given by
+
+\begin{equation}
+	 k_{zr}^2 = \frac{\omega^2}{c^2} - k_{xr}^2
+\label{eq:kzr}
+\end{equation}
+
+The general solution to equation \ref{eq:Pzr} is on the form
+\begin{align}
+	P(k_{xs},z_s,k_{xr},z_r,\omega) &= A(k_{xs},z_s,k_{xr},\omega) \cdot e^{i k_{zr} z_r} + \\
+		& B(k_{xs},z_s,k_{xr},\omega) \cdot e^{-i k_{zr} z_r}
+\label{eq:}
+\end{align}
+which corresponds to two waves travelling in opposite directions, one in the positive $z$ direction, and one in the negative. In order to obtain a specific solution for both $A$ and $B$, two boundary conditions are needed. Assuming that we have a set of receivers at $z=0$, we are able to measure one boundary condition, $P(k_{xs},z_s,k_{xr},0,\omega)$, but we do not have access to a second boudary condition. In order to find an approximate solution, we assume that the wavefield consists only of one-way (upgoing) waves, that is, $A(k_{xs},z_s,k_{xr},\omega) = 0$. Inserting the known boundary condition, we get
+\begin{equation}
+	P(k_{xs},z_s,k_{xr},0,\omega) = B(k_{xs},z_s,k_{xr},\omega) 
+\label{eq:}
+\end{equation}  
+resulting in the specific solution 
+\begin{equation}
+	P(k_{xs},z_s,k_{xr},z_r,\omega) = P(k_{xs},z_s,k_{xr},z_r=0,\omega) \cdot e^{-i k_{zr} z_r}
+\label{eq:PzrSol}
+\end{equation}
+Equations \ref{eq:kzr} and \ref{eq:PzrSol} constitute the solution with respect to the received wavefield, starting from the wave equation \ref{eq:waveEqR}. Since the wave equation for the emitted wavefield, equation \ref{eq:waveEqS}, has the exact same structure, the derivation of a specific solution follows the same lines as for the received wavefield, resulting in the equations
+
+\begin{equation}
+	P(k_{xs},z_s,k_{xr},z_r,\omega) = P(k_{xs},z_s=0,k_{xr},z_r,\omega) \cdot e^{-i k_{zr} z_s}
+\label{eq:PzsSol}
+\end{equation}
+
+\begin{equation}
+	k_{zs}^2 = \frac{\omega^2}{c^2} - k_{xs}^2
+\label{eq:kzs}
+\end{equation}
+where we have used the boundary condition $P(k_{xs},0,k_{xr},z_r,\omega)$, that is, we assume that we know the wavefield when the source is positioned at $z=0$. We obtain $P(k_{xs},z_s=0,k_{xr},z_r,\omega)$ in equation \ref{eq:PzsSol} by inserting  $z_s = 0$ in equation \ref{eq:PzrSol}, resulting in the expression
+
+\begin{equation}
+	P(k_{xs},z_s,k_{xr},z_r,\omega) = P(k_{xs},z_s=0,k_{xr},z_r=0,\omega) \cdot e^{-i k_{zr} z_r} \cdot e^{-i k_{zs} z_s}
+\label{eq:}
+\end{equation}
+Thus, the wave field resulting from placing the sources and receivers at arbitrary depths $z_s$ and $z_r$ can be extrapolated from a measurement where both source and receiver are placed at $z = 0$. 
+
+Finally, this can be inserted into the inverse transform of equation \ref{eq:inverseTransformedField} in order to calculate the field in the space-time domain:
+
+\begin{multline}
+	p(x_s,z_s,x_r,z_r,t) = \iiint \left\{ P(k_{xs},k_{xr},\omega) 
+		\cdot e^{i \left( - \sqrt{\frac{\omega^2}{c^2} - k_{xr}^2} z_r - \sqrt{\frac{\omega^2}{c^2} - k_{xs}^2} z_s \right)} 
+			\right\} \\
+		\cdot e^{i\left(-k_{xs}x_s - k_{xr}x_r + \omega t \right)} \ dk_{xs} dk_{xr} d\omega
+\label{eq:inverseTransformedField}
+\end{multline}
+where we have inserted the expressions for $k_{zs}$ and $k_{zr}$, and simplified notation by setting $P(k_{xs}, z_s = 0, k_{xr}, z_r = 0,\omega) = P(k_{xs},k_{xr},\omega)$. Note that the right-hand side of the equation is an inverse Fourier transform of the expression within the curly braces. 
+
+We define the ``migration operator'' $M$:
+	\begin{equation}
+		M(k_{xs},z_s,k_{xr},z_r,\omega) = 
+			e^{i \left( - \sqrt{\frac{\omega^2}{c^2} - k_{xr}^2} z_r - \sqrt{\frac{\omega^2}{c^2} - k_{xs}^2} z_s \right)}
+	\label{eq:}
+	\end{equation}
+
+From this we can devise a simple scheme to calculate the field given resulting from lowering the source and receiver to arbitrary positions $z_s$ and $z_r$. 
+
+\begin{itemize}
+	\item Fourier transform the field resulting from having both source and receiver at $z=0$: $P(k_{xs},k_{xr},\omega) = \mathcal{F} \{ p(x_s,x_r,t)\}$
+	
+	\item Multiply by the migration operator to migrate the source and receiver to $z_s$ and $z_r$: 
+	\begin{equation}
+		P(k_{xs},z_s,k_{xr},z_r,\omega) = P(k_{xs},k_{xr},\omega) \cdot M(k_{xs},z_s,k_{xr},z_r,\omega)
+	\label{eq:}
+	\end{equation}
+
+	\item Inverse transform to obtain the field in space-time coordinates: 
+	\begin{equation}
+		p(x_s,z_s,x_r,z_r,t) = \mathcal{F}^{-1} \left\{ P(k_{xs},z_s,k_{xr},z_r,\omega) \right\}
+	\label{eq:}
+	\end{equation}
+\end{itemize}
+
+\section{Imaging}
+\subsection{Imaging condition}
+In order to go from a general field $p(x_s,z_s,x_r,z_r,t)$ to an image $I(x,z)$ which is related to the reflectivity in points $(x,z)$, an \textit{imaging condition} is needed. Claerbout \cite{Claerbout1971} suggested the following mapping:
+\begin{equation}
+	I(x,z) = p(x_s = x, z_s = z, x_r = x, z_r = z, t=0)
+\label{eq:imagCond}
+\end{equation}
+Conceptually, this corresponds to lowering both a source and a receiver to the image point $(x,z)$ and reading out the field at time $t=0$. The following thought experiment may explain why this is a reasonable approach:
+
+Assume that a source is located in a position $\bm{r}_s$. It emits a pulse, so that $p(\bm{r}_s,t) = P_0 \delta(t)$. The pulse reaches a scatterer in position $\bm{r}$, and the scatterer acts as a secondary source. The reflected field reaches a receiver in position $\bm{r}_r$, and if amplitude scaling due to propagation is ignored, the pressure at the receiver is 
+\begin{equation}
+	p(\bm{r}_r,t) = o(\bm{r}) \cdot P_0 \cdot \delta \left(t - \frac{1}{c} \left(\bm{r}-\bm{r}_s + \bm{r} - \bm{r}_s \right) \right)
+\label{eq:}
+\end{equation}
+
+where $o(\bm{r})$ is the reflectivity of the scatterer. We can see from the above equation that
+\begin{equation}
+	o(\bm{r}) \cdot P_0 = \lim_{\bm{r}_s,\bm{r}_r \rightarrow \bm{r}} \int\limits_{0^-}^{0^+}p(\bm{r}_r,t) dt
+\label{eq:}
+\end{equation}
+
+Thus, the pressure measured at $t=0$ when both source and receiver are infinitesimally close to the scatterer should be proportional to the reflectivity of the scatterer.
+
+\subsection{Stolt imaging}
+Given the imaging condition in equation \ref{eq:imagCond}, we can insert this into the inverse transform expression of equation \ref{eq:inverseTransformedField}:
+
+\begin{multline}
+	I(x,z) = \iiint P(k_{xs},k_{xr},\omega) \\
+		\cdot e^{-i \left( \sqrt{\frac{\omega^2}{c^2} - k_{xr}^2} + \sqrt{\frac{\omega^2}{c^2} - k_{xs}^2} \right) z} 
+		\cdot e^{-i\left(k_{xs} + k_{xr} \right) x} \ dk_{xs} dk_{xr} d\omega
+\label{eq:stoltImage}
+\end{multline}
+We define two new variables $k_z$ and $k_x$:
+\begin{equation}
+	k_z = \sqrt{\frac{\omega^2}{c^2} - k_{xr}^2} + \sqrt{\frac{\omega^2}{c^2} - k_{xs}^2}
+\label{eq:kz}
+\end{equation}
+
+\begin{equation}	 
+	k_x = k_{xs} + k_{xr}
+\label{eq:kx}
+\end{equation}
+
+and can then rewrite equation \ref{eq:stoltImage} as
+\begin{equation}
+	I(x,z) = \iiint P(k_{xs},k_{xr},\omega)
+		\cdot e^{-i k_z z} \cdot e^{-i k_x x} \ dk_{xs} dk_{xr} d\omega
+\label{eq:simpleStoltImage}
+\end{equation}
+We see that the expression in equation \ref{eq:simpleStoltImage} has the structure of a two-dimensional inverse Fourier transform plus a simple summation, but that a change of variables is needed to perform this inverse transform. Starting from equation \ref{eq:kz}, we can find an expression of $\omega$ as function of $k_z$, $k_{xs}$ and $k_{xr}$ (see appendix \ref{sec:derOkz} for details):
+\begin{equation}
+	\omega(k_z,k_{xs},k_{xr}) = \pm \frac{c}{2k_z} \cdot \sqrt{k_z^4 + 2k_z^2(k_{xs}^2 + k_{xr}^2) - (k_{xs}^2-k_{xr}^2)^2}
+\label{eq:omegaFunc}
+\end{equation}
+
+Here we choose a negative sign for $\omega$, because this corresponds to the assumption of upgoing waves done in \ref{sec:GeneralDerivation}. Deriving this with respect to $k_z$, we get
+\begin{equation}
+	\frac{\partial \omega}{\partial k_z} = 
+		- \frac{c}{2k_z} \cdot \frac{3k_z^3 + 2k_z(k_{xs}^2 + k_{xr}^2) + (k_{xs}^2-k_{xr}^2)^2}
+			{\sqrt{k_z^4 + 2k_z^2(k_{xs}^2 + k_{xr}^2) - (k_{xs}^2-k_{xr}^2)^2}} = B(k_z,k_{xs},k_{xr})
+\label{eq:domegadkz}
+\end{equation}
+
+Using equations \ref{eq:omegaFunc}, \ref{eq:domegadkz}, we can substitute $\omega$ with $k_z$ in equation \ref{eq:simpleStoltImage}:
+\begin{equation}
+	I(x,z) = \iiint P(k_{xs},k_{xr},k_z)
+		\cdot e^{-i k_z z} \cdot e^{-i k_x x} \ dk_{xs} dk_{xr} dk_z
+\label{eq:imageSubOmega}
+\end{equation}
+where $P(k_{xs},k_{xr},k_z)$ is given by
+\begin{equation}
+	P(k_{xs},k_{xr},k_z) = B(k_z,k_{xs},k_{xr}) \cdot P(k_{xs},k_{xr},\omega(k_z,k_{xs},k_{xr}))
+\label{eq:}
+\end{equation}
+We see here that the result of substituting $\omega$ with $k_z$ is a shift in $\omega$ of the original spectrum, plus a scaling with the amplitude term B.
+
+We also note that we can write $k_{xr}$ as a function of $k_x$ and $k_{xs}$:
+\begin{equation}
+	k_{xr}(k_x,k_{xs}) = k_x - k_{xs} \quad \Longrightarrow \quad 
+		\frac{\partial k_{xr}}{\partial k_x} = 1
+\label{eq:kxrFunc}
+\end{equation}
+Thus, substituting $k_{xr}$ with $k_x$ in equation \ref{eq:imageSubOmega}, we obtain the final imaging expression
+\begin{equation}
+	I(x,z) = \iiint P(k_{xs},k_{xr}(k_x,k_{xs}),k_z)
+		\cdot e^{-i k_z z} \cdot e^{-i k_x x} \ dk_{xs} dk_x dk_z
+\label{eq:imageSubOmega}
+\end{equation}
+This is effectively a simple summation over $k_{xs}$, plus a two-dimensional inverse Fourier transform in terms of $k_x$ and $k_z$.
+
+\bibliography{C:/svn/latex-PhDPapers/BibTeX/JabRef_Databases/PhD_project}
+\bibliographystyle{plain}
+
+\appendix
+\section{Derivation of $\omega(k_z,k_{xs},k_{xr})$ and $\frac{\partial \omega}{\partial k_z}$}
+\label{sec:derOkz}
+\begin{equation}
+	k_z = \sqrt{\frac{\omega^2}{c^2} - k_{xr}^2} + \sqrt{\frac{\omega^2}{c^2} - k_{xs}^2}
+\label{eq:kz2}
+\end{equation}
+Equation \ref{eq:kz2} is our starting point, and we want to find an expression for $\omega(k_z,k_{xs},k_{xr})$. Squaring both sides and rearranging a bit yields
+\begin{equation}
+	k_z^2 = 2 \cdot \left(\frac{\omega}{c} \right)^2 - k_{xs}^2 - k_{xr}^2 
+		+ 2 \cdot \sqrt{\left( \left(\frac{\omega}{c} \right)^2 - k_{xs}^2 \right)
+		\cdot \left( \left(\frac{\omega}{c} \right)^2 - k_{xr}^2 \right)}
+\label{eq:}
+\end{equation}
+We rearrange this so that the square root is separated on the right side:
+\begin{equation}
+ 	\frac{1}{2} \left(k_z^2 + k_{xs}^2 + k_{xr}^2 - 2 \left(\frac{\omega}{c} \right)^2 \right) = 
+ 	\sqrt{\left( \left(\frac{\omega}{c} \right)^2 - k_{xs}^2 \right)
+		\cdot \left( \left(\frac{\omega}{c} \right)^2 - k_{xr}^2 \right)}
+\label{eq:}
+\end{equation}
+and then square both sides once again:
+\begin{multline}
+	\frac{1}{4} \left( 4 \frac{\omega^4}{c^4} + k_z^4 + k_{xs}^4 + k_{xr}^4
+		- 4\frac{\omega^2}{c^2} \cdot \left( k_z^2 + k_{xs}^2 + k_{xr}^2 \right)
+		+ 2k_z^2 \left(k_{xs}^2 + k_{xr}^2 \right) + 2 k_{xs}^2 k_{xr}^2
+		\right) \\
+		= \frac{\omega^4}{c^4} - \frac{\omega^2}{c^2}\cdot \left(k_{xs}^2 + k_{xr}^2 \right)
+		+ k_{xs}^2 k_{xr}^2
+\label{eq:}
+\end{multline}
+We see that several terms are present on both sides of the equation, thus cancelling each other. Only one term involving $\omega$ is left. We separate this to one side:
+\begin{equation}
+	\frac{\omega^2}{c^2}\cdot k_z^2 = 
+		\frac{1}{4} \Bigl(k_z^4 + k_{xs}^4 + k_{xr}^4 + 2k_z(k_{xs}^2 + k_{xs}^2) 
+			- 2k_{xs}^2 k_{xr}^2  \Bigr)
+\label{eq:}
+\end{equation}
+and rearrange once again to get an expression for $\omega$:
+\begin{equation}
+	\omega = \pm \frac{c}{2k_z} \cdot \sqrt{k_z^4 + 2k_z^2(k_{xs}^2 + k_{xr}^2) - (k_{xs}^2-k_{xr}^2)^2}
+\label{eq:}
+\end{equation}
+We also want to calculate $\frac{\partial \omega}{\partial k_z}$. To simplify notation, we first define the expression
+\begin{equation}
+	G = k_z^4 + 2k_z^2(k_{xs}^2 + k_{xr}^2) - (k_{xs}^2-k_{xr}^2)^2
+\label{eq:}
+\end{equation}
+$\frac{\partial \omega}{\partial k_z}$ is then given by
+\begin{align}
+	\frac{\partial \omega}{\partial k_z} &= \pm \left(-\frac{c}{2k_z^2} \cdot \sqrt{G} 
+		+ \frac{c}{2k_z} \cdot \frac{1}{\sqrt{G}} \cdot \frac{\partial G}{\partial k_z} \right) \\
+		&= \pm\frac{c}{2k_z\sqrt{G}} \cdot \left(\frac{\partial G}{\partial k_z} -\frac{G}{k_z}\right)\\
+		&= \pm \frac{c}{2k_z\sqrt{G}} \cdot \Bigl(4k_z^3 + 4k_z(k_{xs}^2 + k_{xr}^2)
+			- k_z^3 - 2 k_z(k_{xs}^2 + k_{xr}^2) + (k_{xs}^2-k_{xr}^2)^2 \Bigr) \\
+		&= \pm \frac{c}{2k_z} \cdot \frac{3k_z^3 + 2k_z(k_{xs}^2 + k_{xr}^2) + (k_{xs}^2-k_{xr}^2)^2}
+			{\sqrt{k_z^4 + 2k_z^2(k_{xs}^2 + k_{xr}^2) - (k_{xs}^2-k_{xr}^2)^2}} \\		
+\label{eq:}
+\end{align}
+
+
+\end{document}
