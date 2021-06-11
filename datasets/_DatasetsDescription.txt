@@ -31,3 +31,6 @@ A 3D outwardly directed cylindrical scan of small lead spheres suspended in wate
 
 "CylScan3D_ObjectsInPipe.mat"
 A 3D outwardly directed cylindrical scan of a selection of objects placed in the bottom of a pipe, with the scanning surface was centered in the pipe. The dataset was made to demonstrate how CPSM could be used for imaging complex objects. As a curiosity, the scanner was actually a Lego Mindstorm NXT robot controlled from Matlab. The dataset is described in detail in section 7.A.1 in the attached PhD thesis by M.H. Skjelvareid.
+
+"CopperBlock_2degTilt"
+A 2D linear immersion scan where object under inspection (a copper block with side-drilled holes) was tilted approximately 2 degrees relative to the transducer scan line. The dataset is used to demonstrate tilt compensation - the wavefield is extrapolated from the original scan line down to the tilted surface of the copper block. From here, regular PSM or Stolt focusing can be used to image the interior of the copper block.
