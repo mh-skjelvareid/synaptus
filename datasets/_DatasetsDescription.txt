@@ -46,3 +46,15 @@ A full matrix measurement similar to ArraySteelPins.mat, but for imaging of the 
 Transducer center frequency: 	3.5 MHZ
 Sampling frequency: 			50 MHz
 Measurement window begin: 		28 us
+
+"Array_SingleSteelLayer_31Angles"
+Setup shown in image "Array_SingleSteelLayer.jpg". Array placed directly on steel test block with side-drilled holes. Acquired using an Imasonic transducer array and Verasonics hardware. The transmitted wave is a plane wave with 31 different "steering angles" (angle number 16 corresponds to zero steering angle). 
+Transducer center frequency: 	5 MHZ
+Sampling frequency: 			19.23 MHz
+Measurement window begin: 		0 us
+
+"Array_SingleSteelLayer_63Angles"
+Setup shown in image "Array_WaterSteelLayers_63Angles.jpg". Array immersed in water, 3/4 inches above steel test block with side-drilled holes. Acquired using an Imasonic transducer array and Verasonics hardware. The transmitted wave is a plane wave with 63 different "steering angles" (angle number 32 corresponds to zero steering angle).
+Transducer center frequency: 	5 MHZ
+Sampling frequency: 			19.23 MHz
+Measurement window begin: 		0 us
