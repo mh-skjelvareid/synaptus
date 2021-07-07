@@ -78,12 +78,12 @@ function varargout = psm(ptxy,fs,tDelay,cc,thick,fLow,fHigh,sss,varargin)
 
 %% Parse optional input arguments
 p = inputParser;                        % Create input parser
-p.addParamValue('xFftMult',1);          % Multiplier for FFT size in x dir.
-p.addParamValue('yFftMult',1);          % Multiplier for FFT size in y dir.
-p.addParamValue('tFftMult',1);          % Multiplier for FFT size in t dir.
-p.addParamValue('hh',1)                 % Transducer impulse response
-p.addParamValue('xStart',0)             % First x value of scan
-p.addParamValue('yStart',0)             % First y value of scan
+p.addParameter('xFftMult',1);           % Multiplier for FFT size in x dir.
+p.addParameter('yFftMult',1);           % Multiplier for FFT size in y dir.
+p.addParameter('tFftMult',1);           % Multiplier for FFT size in t dir.
+p.addParameter('hh',1)                  % Transducer impulse response
+p.addParameter('xStart',0)              % First x value of scan
+p.addParameter('yStart',0)              % First y value of scan
 p.parse(varargin{:});                   % Parse possible parameter-value pairs
 param = p.Results;                      % Transfer results to "param" structure
 clear p

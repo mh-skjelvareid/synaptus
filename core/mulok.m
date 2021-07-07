@@ -91,17 +91,17 @@ function varargout = mulok(ptxy,fs,tDelay,cc,thick,fLow,fHigh,sss,varargin)
 
 %% Parse optional input parameters
 p = inputParser;                        % Input parsing object
-p.addParamValue('xFftMult',1);          % Multiplier for FFT size in x dir.
-p.addParamValue('yFftMult',1);          % Multiplier for FFT size in x dir.
-p.addParamValue('tFftMult',1);          % Multiplier for FFT size in t dir.
-p.addParamValue('zFftMult',1)           % Multiplier for FFT size in z dir.
-p.addParamValue('upSamp',4)             % Multiplier for interpolation FFT size
-p.addParamValue('hh',1);                % Impulse response
-p.addParamValue('xStart',0)             % First x value of scan
-p.addParamValue('yStart',0)             % First x value of scan
+p.addParameter('xFftMult',1);           % Multiplier for FFT size in x dir.
+p.addParameter('yFftMult',1);           % Multiplier for FFT size in y dir.
+p.addParameter('tFftMult',1);           % Multiplier for FFT size in t dir.
+p.addParameter('zFftMult',1)            % Multiplier for FFT size in z dir.
+p.addParameter('upSamp',4)              % Multiplier for interpolation FFT size
+p.addParameter('hh',1);                 % Impulse response / waveform
+p.addParameter('xStart',0)              % First x value of scan
+p.addParameter('yStart',0)              % First x value of scan
 validator = @(str) any(strcmp(str,{'linear','chirpz'}));
-p.addParamValue('interpol','linear',validator);     % Interpolation method
-p.addParamValue('fc',mean([fHigh,fLow]));           % Center frequency
+p.addParameter('interpol','linear',validator);     % Interpolation method
+p.addParameter('fc',mean([fHigh,fLow]));           % Center frequency
 p.parse(varargin{:});                               % Parse param.-val. pairs
 param = p.Results;                                  % Store results in "param"
 clear p

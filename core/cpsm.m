@@ -69,8 +69,8 @@ function varargout = cpsm(ptpz,fs,tDelay,cc,fLow,fHigh,sss,r0,...
 %% Parse optional input arguments
 p = inputParser;                                    % Create input parser
 validator = @(str) any(strcmp(str,{'haun','gardner','exact'}));
-p.addParamValue('transFunc','haun',validator);      % Migration transfer func.
-p.addParamValue('tFftMult',1);                      % Multip. FFT in t dir.
+p.addParameter('transFunc','haun',validator);       % Migration transfer func.
+p.addParameter('tFftMult',1);                       % Multip. FFT in t dir.
 p.parse(varargin{:});                               % Parse param.-value pairs
 param = p.Results;                                  % Transfer res. to structure
 clear p
