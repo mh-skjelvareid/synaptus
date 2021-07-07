@@ -1,5 +1,5 @@
 close all
-clear all
+clearvars
 
 %% Load data
 disp('Loading data');

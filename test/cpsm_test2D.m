@@ -1,5 +1,5 @@
 close all
-clear all
+clearvars
 
 %% Load data, extract 2D slice and convert to double precision
 load('../datasets/CylScan3D_LeadSpheres','ptpz','fs','phiStep','zStep',...
