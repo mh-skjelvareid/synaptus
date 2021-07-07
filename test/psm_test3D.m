@@ -1,5 +1,5 @@
 close all
-clear all
+clearvars
 clc
 
 %% Load data

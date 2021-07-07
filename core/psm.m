@@ -120,7 +120,7 @@ end
 
 omega = ((0:(nFFTt-1)) - floor(nFFTt/2))'*((2*pi*fs)/nFFTt);    % Freq. vactor
 omega = ifftshift(omega);                                       % Shift as fft
-omegaBandIndex = (omega >= -(2*pi*fHigh)) & (omega <= -(2*pi*fLow));
+omegaBandIndex = (omega >= 2*pi*fLow) & (omega <= 2*pi*fHigh);
 
 kxs = (2*pi)/sss(1);                                % Sampling wavenum., x dir.
 kx = ((0:(nFFTx-1)) - floor(nFFTx/2))*(kxs/nFFTx);  % X-axis wave number vector
@@ -174,10 +174,10 @@ for ii = 1:nL
     realWaveIndex = (KZ2 >= 0);                 % Index of real kz
     KZ = sqrt(KZ2.*realWaveIndex);              % Calculate kz
     Pokxky = Pokxky.*realWaveIndex;             % Mask out evanescent waves
-    phaseShift = exp(-1i*KZ*dzl(ii));           % Phase shift for each z step
+    phaseShift = exp(1i*KZ*dzl(ii));           % Phase shift for each z step
 
     if ii == 1
-        PokxkyShifted = Pokxky.*exp(-1i*KZ*zOffset);    % Shift to tDelay depth
+        PokxkyShifted = Pokxky.*exp(1i*KZ*zOffset);    % Shift to tDelay depth
         nPlanesZ = ceil((thick(1)-zOffset)/dzl(1))+1;   % Calc. # Z depths
         zIm{ii} = (0:(nPlanesZ-1))*dzl(ii) + zOffset;   % Calc. Z depths
     else
@@ -210,7 +210,7 @@ for ii = 1:nL
 
     % Migrate ref. wavefield to next interface
     if ii < nL
-        Pokxky = Pokxky.*exp(-1i*KZ*thick(ii));
+        Pokxky = Pokxky.*exp(1i*KZ*thick(ii));
     end
 end
 
