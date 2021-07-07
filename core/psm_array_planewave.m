@@ -105,7 +105,7 @@ nFFTx = param.xFftMult * 2^nextpow2(nX);                        % FFT size x
 
 omega = ((0:(nFFTt-1)) - floor(nFFTt/2))'*((2*pi*fs)/nFFTt);    % Omega vector, neg. to pos.
 omega = ifftshift(omega);                                       % Shift corr. to fft output
-omegaBandIndex = (omega >= -(2*pi*fHigh)) & (omega <= -(2*pi*fLow));
+omegaBandIndex = (omega >= 2*pi*fLow) & (omega <= 2*pi*fHigh);
 
 kxs = (2*pi)/aPitch;                                % Sampling wavenum., x dir.
 kx = ((0:(nFFTx-1)) - floor(nFFTx/2))*(kxs/nFFTx);  % X-axis wave number vector
@@ -160,10 +160,10 @@ for ll = 1:nL
         Pokx = Pokxa(:,:,ii);                 
     
         % Z-axis wave number for transmitted downward plane wave
-        KZ_down = -(OMEGA/cc(ll)) * cos(sAngle(ii,ll));
+        KZ_down = (OMEGA/cc(ll)) * cos(sAngle(ii,ll));
 
         % Pre-calculate phase shift matrices
-        PS_Z = exp(-1i*(KZ_down + KZ_up)*dzl(ll));        % Z extrapolation, down and up
+        PS_Z = exp(1i*(KZ_down + KZ_up)*dzl(ll));        % Z extrapolation, down and up
         PS_T = exp(1i*(OMEGA(:,1:nX).*txDelay(:,ii).'));  % Compensate for tx delay
 
         % Step through each z coordinate within layer and focus
@@ -181,7 +181,7 @@ for ll = 1:nL
         
         % Extrapolate original wavefield to next interface
         if ll < nL
-            Pokxa(:,:,ii) = Pokxa(:,:,ii).*exp(-1i*(KZ_down + KZ_up)*thick(ll));
+            Pokxa(:,:,ii) = Pokxa(:,:,ii).*exp(1i*(KZ_down + KZ_up)*thick(ll));
         end
     end
     

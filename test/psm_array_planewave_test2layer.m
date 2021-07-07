@@ -1,4 +1,4 @@
-% close all
+close all
 clearvars
 clc
 
@@ -22,7 +22,6 @@ imagesc(xx*1e3,tt*1e6,abs(hilbert(data(:,:,63))))
 title({'Raw data envelope,','leftmost angle'})
 xlabel([a1 a2 a3],'x [mm]')
 ylabel([a1 a2 a3],'t [us]')
-
 
 %% Skip water layer, focus in steel layer
 [im,xIm,zIm] = psm_array_planewave(data,fs,txDelay,cc,thick,fLow,fHigh,...
