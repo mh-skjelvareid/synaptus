@@ -3,7 +3,7 @@ clearvars
 clc
 
 %% Load data
-dataFile = '../datasets/Array_WaterSteelLayers_63Angles.mat';
+dataFile = '../../datasets/Array_WaterSteelLayers_63Angles.mat';
 load(dataFile, 'data','txDelay','steeringAngle','fs','fLow','fHigh',...
     'arrayPitch','cc','thick','waveform2Way')
 
@@ -24,7 +24,7 @@ xlabel([a1 a2 a3],'x [mm]')
 ylabel([a1 a2 a3],'t [us]')
 
 %% Skip water layer, focus in steel layer
-[im,xIm,zIm] = psm_array_planewave(data,fs,txDelay,cc,thick,fLow,fHigh,...
+[im,xIm,zIm] = array_psm_planewave(data,fs,txDelay,cc,thick,fLow,fHigh,...
     arrayPitch,'wf',waveform2Way,'skipLayers',[1]);
 
 %% Plot focused image of steel layer

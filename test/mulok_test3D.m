@@ -1,5 +1,9 @@
 close all
 clearvars
+clc
+
+%% Add path to necessary functions
+addpath('../core','../misc')
 
 %% Load data
 disp('Loading data');

@@ -2,6 +2,9 @@ close all
 clearvars
 clc
 
+%% Add path to necessary functions
+addpath('../core','../misc')
+
 %% Load data
 dataFile = '../datasets/Array_WaterSteelLayers_63Angles.mat';
 load(dataFile, 'data','txDelay','steeringAngle','fs','fLow','fHigh',...

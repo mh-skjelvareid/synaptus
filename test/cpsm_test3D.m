@@ -1,5 +1,9 @@
 close all
-clear all
+clearvars
+clc
+
+%% Add path to necessary functions
+addpath('../core','../misc')
 
 %% Load data, convert from single to double precision
 load('../datasets/CylScan3D_LeadSpheres','ptpz','fs','phiStep','zStep',...

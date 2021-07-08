@@ -1,5 +1,9 @@
 close all
-clear all
+clearvars
+clc
+
+%% Add path to necessary functions
+addpath('../core','../misc')
 
 %% Load data
 load('../datasets/LineScan2D_PinsPlexiAluSDH.mat','fs','ptx','tDelay',...

@@ -1,8 +1,13 @@
-function varargout = psm_array_planewave(ptxa,fs,txDelay,cc,thick,fLow,fHigh,aPitch,varargin)
-% psm - Phase Shift Migration for linear arrays with steered plane waves  
+function varargout = array_psm_planewave(ptxa,fs,txDelay,cc,thick,fLow,fHigh,aPitch,varargin)
+% array_psm_planewave - Phase Shift Migration for linear arrays with steered plane waves
+%
+%   NOTE: This function only handles the special case of steered plane
+%   waves, while the array_psm() function handles arbitrary transmitted
+%   wave shapes, and also returns a wider field of view. The array_psm
+%   function is therefore recommended over this one. 
 %
 %   Usage:
-%   [im,...] = psm_array_planewave(ptxa,fs,txDelay,cc,thick,fLow,fHigh,aPitch,...)
+%   [im,...] = array_psm_planewave(ptxa,fs,txDelay,cc,thick,fLow,fHigh,aPitch,...)
 %
 %   Input parameters:
 %   ptxa    -    ultrasonic data, dimensions (t,x,angle). It is assumed

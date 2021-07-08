@@ -2,6 +2,9 @@ close all
 clearvars
 clc
 
+%% Add path to necessary functions
+addpath('../core','../misc')
+
 %% Load data
 disp('Loading data'); 
 load('../datasets/PlaneScan3D_PlexiAluFBH.mat',...

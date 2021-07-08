@@ -1,5 +1,9 @@
 close all
 clearvars
+clc
+
+%% Add path to necessary functions
+addpath('../core','../misc')
 
 %% Load data, extract 2D slice and convert to double precision
 load('../datasets/CylScan3D_LeadSpheres','ptpz','fs','phiStep','zStep',...

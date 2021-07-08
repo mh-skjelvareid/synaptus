@@ -1,6 +1,10 @@
 %% Close / clear
 close all
-clear all
+clearvars
+clc
+
+%% Add path to necessary functions
+addpath('../core','../misc')
 
 %% Load data
 load('../datasets/CylScan3D_ObjectsInPipe','ptpz','fs','phiStep','zStep',...

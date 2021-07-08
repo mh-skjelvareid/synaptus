@@ -1,6 +1,9 @@
-% close all
+close all
 clearvars
 clc
+
+%% Add path to necessary functions
+addpath('../core','../misc')
 
 %% Load data
 dataFile = '../datasets/Array_SingleSteelLayer_31Angles.mat';

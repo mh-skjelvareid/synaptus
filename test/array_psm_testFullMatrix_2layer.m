@@ -7,6 +7,9 @@ close all
 clearvars
 clc
 
+%% Add path to necessary functions
+addpath('../core','../misc')
+
 %% Load test data
 load('../datasets/ArrayCuBlockStationary.mat','data','MWB')
 mwb = MWB*1e-6;         % Measurement window begin

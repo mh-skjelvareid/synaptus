@@ -7,6 +7,9 @@ close all
 clearvars
 clc
 
+%% Add path to necessary functions
+addpath('../core','../misc')
+
 %% Load test data
 load('../datasets/ArraySteelPins.mat','MWB','data')
 mwb = MWB*1e-6;         % Measurement window begin
@@ -48,6 +51,7 @@ txDelay = eye(nX) - 1;  % Zero transmit delay, only one element at a time
 
 %%
 figure
+colormap(gray(256))
 imagesc(xIm*1e3,zIm{1}*1e3,logImage(im{1}))
 colorbar
 set(gca,'CLim',[-40 0])
