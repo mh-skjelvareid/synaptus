@@ -32,4 +32,4 @@ figure
 imagesc(xIm*1e3,zIm{2}*1e3,abs(im{2}))
 xlabel('x [mm]')
 ylabel('z [mm]')
-title({'Focused image of steel layer,', 'based on all angles'})
+title({'Focused image of steel layer,', 'based on all transmitted waves'})

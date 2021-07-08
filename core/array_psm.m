@@ -16,7 +16,9 @@ function varargout = array_psm(ptxw,fs,txDelay,cc,thick,fLow,fHigh,aPitch,vararg
 %               i.e. the data starts at t=0, when the first pulse is fired 
 %               (zero-pad if necessary).
 %   fs      -   Sampling frequency [Hz]
-%   txDelay -   2D array of pulse time delays [s], dimensions (x, txwave)
+%   txDelay -   2D array of pulse time delays [s], dimensions (x, txwave).
+%               Delays are assumeed to be positive. For inactive (not
+%               excited) array elements, set txDelay(m,n) = -1. 
 %   cc      -   Vector of compressional wave velocities for each layer [m/s]
 %   thick   -   Vector of thickness for each layer [m/s]
 %                  (set last boundary equal to end of ROI)
@@ -28,7 +30,9 @@ function varargout = array_psm(ptxw,fs,txDelay,cc,thick,fLow,fHigh,aPitch,vararg
 %   tFftMult    -   multiplier for t-axis FFT size. Default: 1
 %   xFftMult    -   multiplier for x-axis FFT size. Default: 2
 %   zResMult    -   multiplier for final image z resolution. Default: 2
-%   wf          -   2-way waveform, for matched filt [vector]. Default: 1 
+%   wf          -   2-way waveform, for matched filt [vector]. Default: 1
+%                   It is assumed that the waveform is equal for every
+%                   transmitted pulse.
 %   pulseDelay  -   Used if 2-way waveform is not available. Approximate
 %                   delay from transducer excitation to pulse maximum [s],
 %                   for transmit and receive processes combined.
@@ -144,8 +148,14 @@ nShiftX = floor((nFFTx-nX)/2);                      % Shift for centering output
 if isequal(param.wf,1) && not(param.pulseDelay == 0)
     param.wf = [zeros(round(param.pulseDelay*fs),1);1]; 
 end
+
 % Repeat waveform for all x and txwaves
 ptxw_d = repmat(param.wf(:),[1,nX,nW]);     
+
+% Zero out waveform for unused elements (indicated by negative txDelay)
+noWaveInd = (txDelay < 0);
+noWaveInd = repmat(reshape(noWaveInd,[1,nX,nW]), [length(param.wf),1,1]);
+ptxw_d(noWaveInd) = 0;
 
 %% Fourier transform along time dimension for both wavefields
 Poxw_d = fft(ptxw_d,nFFTt,1);

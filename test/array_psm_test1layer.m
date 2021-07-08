@@ -26,12 +26,10 @@ ylabel([a1 a2 a3],'t [us]')
 %%
 [im,xIm,zIm] = array_psm(data,fs,txDelay,cc,thick,fLow,fHigh,...
     arrayPitch,'wf',waveform2Way);
-% [im,xIm,zIm] = array_psm(data,fs,txDelay,cc,thick,fLow,fHigh,...
-%     arrayPitch,'pulseDelay',0.4e-6);
 
 %%
 figure
 imagesc(xIm*1e3,zIm{1}*1e3,abs(im{1}))
 xlabel('x [mm]')
 ylabel('z [mm]')
-title({'Focused image based on all angles'})
+title({'Focused image based on all transmitted waves'})
