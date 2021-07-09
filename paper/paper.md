@@ -20,15 +20,13 @@ bibliography: paper.bib
 
 # Summary
 
-The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).
+Sonic imaging is performed by transmitting sound waves into an object and recording the waves scattered from within the object. In many applications, transmission and recording are performed with the same unit, a transducer. In some cases a single transducer is used, and by moving the transducer relative to the object of interest, a 2D or 3D map of reflections is created. Transducer arrays, which are basically several small transducers stacked along a line or on a grid, are also becoming increasingly common. By modulating the amplitude and time delay for transmission from each array element, arrays can create waves which are focused or shaped according to the application. The arrays also enable recording of scattered reflections at many different positions, without moving the array as a whole.
+
+The recordings of scattered waves represent "raw data" for both single-transducer and array imaging setups. This data often suffers from poor resolution, making it hard (if not impossible) to interpret directly.  The data needs to be focused in order to create an image resembling the physical structure of an object. This process - creating focused images from raw pulse-echo ultrasound data - is the subject of the software presented here.
+
+Sonic imaging is used in a number of different applications, such as geophysical exploration, medical imaging, and non-destructive testing (NDT) of industrial components. 
+
+
 
 # Statement of need
 
