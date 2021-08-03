@@ -13,42 +13,51 @@ authors:
 affiliations:
  - name: UiT - the Arctic University of Norway
    index: 1
-date: 10 July 2021
+date: 4 August 2021
 bibliography: paper.bib
 
 ---
 
 # Summary
 
-Sonic imaging is performed by transmitting sound waves into an object and recording the waves scattered from within the object. In many applications, transmission and recording are performed with the same unit, a transducer. In some cases a single transducer is used, and by moving the transducer relative to the object of interest, a 2D or 3D map of reflections is created. Transducer arrays, which are basically several small transducers stacked along a line or on a grid, are also becoming increasingly common. By modulating the amplitude and time delay for transmission from each array element, arrays can create waves which are focused or shaped according to the application. The arrays also enable recording of scattered reflections at many different positions, without moving the array as a whole.
+Sonic imaging is performed by transmitting sound waves into an object, and recording the scattered waves from within that object. In many applications, transmission and recording are performed with the same unit, a *transducer*. If a single transducer is used, each measurement produces a vector representing the backscattered waves at a given location. By moving the transducer relative to the object of interest, a 2D or 3D map of reflections can be created.
 
-The recordings of scattered waves represent "raw data" for both single-transducer and array imaging setups. This data often suffers from poor resolution, making it hard (if not impossible) to interpret directly.  The data needs to be focused in order to create an image resembling the physical structure of an object. This process - creating focused images from raw pulse-echo ultrasound data - is the subject of the software presented here.
+Transducers can be stacked along a line or on a grid to create transducer *arrays*. By manupulating how signals are transmitted by each individual element, an array can be used to shape the transmitted wave to optimize it for a given application. The spatial distribution of the elements also enables recording of a 2D or 3D map of reflections without moving the array as a whole.
 
-Sonic imaging is used in a number of different applications, such as geophysical exploration, medical imaging, and non-destructive testing (NDT) of industrial components. 
+The recordings of scattered waves represent "raw data", both for single-transducer and array imaging setups. This data often suffers from poor resolution, making it hard (if not impossible) to interpret directly.  The data needs to be focused in order to create an image resembling the physical structure of an object. This process - creating focused images from raw pulse-echo ultrasound data - is the subject of the `Synaptus` toolbox presented here.
+
+Sonic imaging is used in a number of different applications, such as geophysical imaging, sonar imaging, medical imaging, and non-destructive testing (NDT) of industrial components. The methods and algorithms used in these fields are similar in many ways, but there are also significant differences in hardware, scale, and physical properties of the objects that are imaged. The software presented here was originally written as part of a PhD thesis on ultrasund imaging for NDT [@Skjelvareid2012b; @Skjelvareid2011a; @Skjelvareid2012a; @skjelvareid2013].
+
+The thesis was greatly inspired by work by Tomas Olofsson and Tadeusz Stepinski at Uppsala University [@Olofsson2010, @Stepinski2007]. The underlying theory (mainly phase shift migration and f-k migration) was originally developed for geophysical imaging [@Stolt1978; @Gazdag1978], and the free book and software on exploration seismology available through CREWES [@crewes_toolbox_2021] was very helpful in the work on the thesis.
+
+The thesis focused on three main points:
+* Processing data in the Fourier domain (faster and often simpler than processing in the time-space domain).
+* Adapting single-layer algorithms to multi-layered media (with each layer having a different sound velocity).
+* Adapting algorithms originally made for cartesian coordinates to cylindrical coordinates (better suited for imaging pipes from the inside).
+
+The datasets and test cases included with the software are all examples of non-destructive testing, mostly within water, plastic and metal.
+
+Note, however, that the software may still be useful to researchers working on other types of sonic imaging, and even radar imaging, which shares many of the same imaging principles.
 
 
 
 # Statement of need
 
-`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
+`Synaptus` is a Matlab / Octave toolbox for synthetic aperture / array ultrasound imaging. The core algorithms have been written as a small set of functions that can handle a large number of imaging geometries (2D / 3D data, single- or multilayered media, cartesian or cylindrical geometries). The code is highly vectorized, taking advantage of Matlabs/Octaves optimized libraries for linear algebra. In addition, the algorithms operate in the Fourier domain, which in many cases is more computationally efficient that operating in the time-space domain.
 
-`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
+The toolbox includes a number of scripts to test the core algorithms, used to process a set of relevant datasets. The datasets also represent a valuable resouce in themselves, given that there are very few publicly available NDT ultrasound datasets. These can e.g. be used as benchmarks by researchers working on new algorithms.
+
+The core algorithms are written to be efficient and flexible. However, the code may not be easy to understand for a researcher who is not yet familiar with the theory. To accomodate those wanting to better understand the concepts, a set of scripts with simplified algorithms have been included. These scripts also produce figures showing raw data, intermediate steps and final focused images.
+
+`Synaptus` has been available on GitHub and Mathworks File Exchange (MFE) since 2016. At the time of writing it has been downloaded 959 times from MFE, and 8 out of 9 reviewers have rated it 5 stars (of 5 possible). The author has also been contacted directly by researchers who have found the toolbox useful, including:
+
+* Alain Plattner at California State University (Fresno, USA), who adapted the code for use in a course on ground penetrating radar. The code is now part of the "Near Surface Geophysics" repository on GitHub [@NSGeophysics2017].
+* Shiwei Wu at Zhejiang University (Hangzhou, China), who built on code from `Synaptus` in his work on imaging cylindrical objects (e.g. pipes) using an external rotating transducer [@wu2015synthetic].
+* Reza Zahiri at [DarkVision](www.darkvisiontech.com) who wanted to use the algorithms in `Synaptus` to process array data, and who insipred the addition of an algorithm for array data to the toolbox.
+
+
+
+
 
 # Mathematics
 
