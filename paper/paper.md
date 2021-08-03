@@ -93,5 +93,6 @@ Figures can be included like this:
 # Acknowledgements
 
 (add acknowledgements)
+BIT?
 
 # References
