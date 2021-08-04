@@ -20,7 +20,9 @@ bibliography: paper.bib
 
 # Summary
 
-Sonic imaging is performed by transmitting sound waves into an object, and recording the scattered waves from within that object. In many applications, transmission and recording are performed with the same unit, a *transducer*. If a single transducer is used, each measurement produces a vector representing the backscattered waves at a given location. By moving the transducer relative to the object of interest, a 2D or 3D map of reflections can be created.
+`Synaptus` is a toolbox made for focusing ultrasound images. It can, however, also be used on data acquired using similar imaging principles, e.g. sonar and radar images.
+
+Ultrasonic imaging is performed by transmitting sound waves into an object and record how the waves are scattered. In many applications, transmission and recording are performed with the same unit, a *transducer*. If a single transducer is used, each measurement produces a vector representing the backscattered waves at a given location. By moving the transducer relative to the object of interest, a 2D or 3D map of reflections can be created.
 
 Transducer elements can be stacked along a line or on a grid to create transducer *arrays*. By manupulating how signals are transmitted by each individual element, an array can be used to shape the transmitted wave to optimize it for a given application. The spatial distribution of the elements also enables recording of a 2D or 3D map of reflections without moving the array as a whole.
 
@@ -35,7 +37,7 @@ The thesis focused on three main points:
 
 The datasets and test cases included with the software are all examples of non-destructive testing, mostly within water, plastic and metal. Note, however, that the software may still be useful to researchers working on other types of sonic imaging, and even radar imaging, which shares many of the same imaging principles.
 
-The thesis is included in the repository and contains a full list of references. However, the most important ones will be highlighted here: The work on `Synaptus` was greatly inspired by previous work by Tomas Olofsson and Tadeusz Stepinski at Uppsala University [@Olofsson2010, @Stepinski2007]. The underlying theory (mainly phase shift migration and f-k migration) was originally developed for geophysical imaging [@Stolt1978; @Gazdag1978], and the free book and software on exploration seismology available through CREWES [@crewes_toolbox_2021] was also very helpful during software development. An extended (not free) version of the book is also available [@margrave_lamoureux_2019]. Finally, the book "Fourier Acoustics" by E.G. Williams [@Williams1999] was essential in developing the theory for cylindrical imaging geometries.
+The thesis is included in the repository and contains a full list of references. However, the most important ones will be highlighted here: The work on `Synaptus` was greatly inspired by previous work by Tomas Olofsson and Tadeusz Stepinski at Uppsala University [@Olofsson2010, @Stepinski2007]. The underlying theory (mainly phase shift migration and Stolt migration) was originally developed for geophysical imaging [@Stolt1978; @Gazdag1978], and the free book and software on exploration seismology available through CREWES [@crewes_toolbox_2021] was also very helpful during software development. An extended (not free) version of the book is also available [@margrave_lamoureux_2019]. Finally, the book "Fourier Acoustics" by E.G. Williams [@Williams1999] was essential in developing the theory for cylindrical imaging geometries.
 
 
 
@@ -53,9 +55,9 @@ The core algorithms are written to be efficient and flexible. However, the code 
 * Shiwei Wu at Zhejiang University (Hangzhou, China), who built on code from `Synaptus` in his work on imaging cylindrical objects (e.g. pipes) using an external rotating transducer [@wu2015synthetic].
 * Reza Zahiri at [DarkVision](www.darkvisiontech.com) who wanted to use the algorithms in `Synaptus` to process array data, and who insipred the addition of an algorithm for array data to the toolbox.
 
-There are a number of open software toolboxes related to ultrasound imaging, including
+A number of open source toolboxes related to ultrasound imaging are publicly available, including e.g. Field II [@field2], K-wave [@kwave] and the UltraSound ToolBox [@rodriguez2017]. However, most such toolboxes focus on medical applications, and none (to my knowledge) have implementations of the algorithms in the `Synaptus` toolbox.
 
-Although the toolbox started out as a summary of my PhD work, and I have since changed the focus of my research to other fields, I hope the toolbox will continue to grow and evolve. I am particularly interested in adapting the algorithms in the toolbox to different imaging setups, e.g. different shaped arrays. Fellow researchers are very much welcome to contribute code and/or datasets, or suggest other additions to the toolbox.
+Although the toolbox started out as a summary of my PhD work, and I have since started working on other research topics, I would like to keep the toolbox a "live" software project. I am particularly interested in adapting the algorithms in the toolbox to different imaging setups, e.g. different shaped arrays or imaging geometries. Fellow researchers are very much welcome to contribute code and/or datasets, or suggest other additions to the toolbox. Given the popularity and availability of Python, a Python implementation of the toolbox algorithms is also seen as a natural continuation of the project.
 
 
 # Citations
