@@ -30,6 +30,7 @@ The recordings of scattered waves represent "raw data", both for single-transduc
 Sonic imaging is used in many different applications, such as geophysical imaging, sonar imaging, medical imaging, and non-destructive testing (NDT) of industrial components. The methods and algorithms used in these fields are similar in many ways, but there are also significant differences in hardware, scale, and physical properties of the objects that are imaged. The software presented here was originally written as part of a PhD thesis on **ultrasund imaging for non-destructive testing** [@Skjelvareid2012b; @Skjelvareid2011a; @Skjelvareid2012a; @Skjelvareid2013].
 
 The thesis focused on three main points:
+
 * Processing data in the Fourier domain (faster and sometimes simpler than procesing in the time-space domain)
 * Adapting single-layer algorithms to multi-layered media, e.g. water and metal
 * Adapting algorithms originally made for cartesian coordinates to cylindrical coordinates (better suited for imaging pipes from the inside)
