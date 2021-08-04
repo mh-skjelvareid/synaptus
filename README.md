@@ -21,11 +21,15 @@ The MULOK algorithm is a multi-layer version of the method known as Stolt migrat
 The CPSM algorithm is an adaptation of the PSM algorithm to a cylindrical imaging geometry (transducer pointing outward from cylindrical scanning surface). The solutions to the wave equation in a cylindrical geometry are Hankel functions. These can be used to extrapolate the wavefield, but are generally very time-consuming to compute. The algorithm also includes two alternative transfer functions which are approximate but much faster.
 
 # Example raw and focused image
-![Setup](https://github.com/mh-skjelvareid/synaptus/tree/paper/graphics/ObjectsInPipe_Setup.png)
-![Raw and focused images](https://github.com/mh-skjelvareid/synaptus/tree/paper/graphics/ObjectsInPipe_Images.png)
+The following images are taken from chapter 7 of the thesis to illustrate one application (of many) of the algorithms in the toolbox.
 
 ![Setup](graphics/ObjectsInPipe_Setup.png)
+
+The images below show raw and focused ultrasonic images.
+
 ![Raw and focused images](graphics/ObjectsInPipe_Images.png)
+
+Again note that this is only a single example, chosen because it is visual and intuitive. It does not illustrate how the toolbox also can handle cartesian geometries and multilayered media.
 
 # Organization
 The toolbox is organized into the following folders:
