@@ -57,8 +57,6 @@ There are a number of open software toolboxes related to ultrasound imaging, inc
 
 Although the toolbox started out as a summary of my PhD work, and I have since changed the focus of my research to other fields, I hope the toolbox will continue to grow and evolve. I am particularly interested in adapting the algorithms in the toolbox to different imaging setups, e.g. different shaped arrays. Fellow researchers are very much welcome to contribute code and/or datasets, or suggest other additions to the toolbox.
 
-# Contributions and future work
-
 
 # Citations
 
