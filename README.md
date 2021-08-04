@@ -24,6 +24,9 @@ The CPSM algorithm is an adaptation of the PSM algorithm to a cylindrical imagin
 ![Setup](https://github.com/mh-skjelvareid/synaptus/tree/paper/graphics/ObjectsInPipe_Setup.png)
 ![Raw and focused images](https://github.com/mh-skjelvareid/synaptus/tree/paper/graphics/ObjectsInPipe_Images.png)
 
+![Setup](graphics/ObjectsInPipe_Setup.png)
+![Raw and focused images](graphics/ObjectsInPipe_Images.png)
+
 # Organization
 The toolbox is organized into the following folders:
 - 'core' contains the functions for synthetic aperture focusing. Each file represents a separate algorithm.
