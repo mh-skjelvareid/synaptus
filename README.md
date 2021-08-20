@@ -62,6 +62,9 @@ The toolbox is organized into the following folders:
 - 'experimental' contains "draft" code related to smaller concepts and ideas, including tilt compensation. The code is not fully polished/commented.
 
 
+# Installation
+Download the toolbox and add (at least) the "core" folder to the Matlab / Octave path. Run the scripts found under "test" to see example usage of the different algorithms. Open and run the scripts under "learn" to see simplified versions of some of the algorithms, with plots.
+
 # Contributing
 Contributions to the toolbox are most welcome; bug reports, suggestions for changes, datasets, new algorithms - anything you think is relevant. See [CONTRIBUTING](CONTRIBUTING.md) file for further details.
 
