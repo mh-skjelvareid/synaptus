@@ -43,7 +43,7 @@ The toolbox is organized into the following folders:
 
 
 # Contributing
-Contributions to the toolbox are most welcome; bug reports, suggestions for changes, datasets, new algorithms - anything you think is relevant. See file _contributing.txt for further details.
+Contributions to the toolbox are most welcome; bug reports, suggestions for changes, datasets, new algorithms - anything you think is relevant. See [CONTRIBUTING](CONTRIBUTING.md) file for further details.
 
 
 # Acknowledgements
