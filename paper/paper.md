@@ -27,7 +27,7 @@ Transducer elements can be stacked along a line or on a grid to create transduce
 
 The recordings of scattered waves represent "raw data", both for single-transducer and array imaging setups. This data often suffers from poor resolution, making it hard (if not impossible) to interpret directly. The data needs to be focused in order to create an image resembling the physical structure of an object. This process - creating focused images from raw pulse-echo ultrasound data - is the purpose of the `Synaptus` toolbox.
 
-Sonic imaging is used in many different applications, such as geophysical imaging, sonar imaging, medical imaging, and non-destructive testing (NDT) of industrial components. The methods and algorithms used in these fields are similar in many ways, but there are also significant differences in hardware, scale, and physical properties of the objects that are imaged. The software presented here was originally written as part of a PhD thesis on **ultrasund imaging for non-destructive testing** [@Skjelvareid2012b].
+Sonic imaging is used in many different applications, such as geophysical imaging, sonar imaging, medical imaging, and non-destructive testing (NDT) of industrial components. The methods and algorithms used in these fields are similar in many ways, but there are also significant differences in hardware, scale, and physical properties of the objects that are imaged. The software presented here was originally written as part of a PhD thesis on **ultrasound imaging for non-destructive testing** [@Skjelvareid2012b].
 
 The thesis focused on three main points:
 
