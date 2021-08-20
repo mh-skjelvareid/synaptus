@@ -4,10 +4,40 @@
 Synaptus is a Matlab/Octave toolbox for synthetic aperture or array imaging. It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar). The toolbox focuses on algorithms implemented in the Fourier domain and on multilayered structures (e.g. water, metal, rock).
 
 
+
 # Background
 The toolbox was originally written by Martin H. Skjelvareid, as a collection of algorithms developed during his work as a PhD candidate. The PhD thesis is included in the "docs" folder, and can also be downloaded from https://hdl.handle.net/10037/4649 . As with so many things, "the devil is in the details" when it comes practical implementation of synthetic aperture algorithms. The toolbox is meant to help people who are new to the field and are looking to make implementations of published algorithms. The data sets included in the toolbox will hopefully be useful in the development of new algorithms for similar measurement geometries. The toolbox could also represent a collection of reference methods against which new algorithms are compared.
 
 The name of the toolbox is an abbreviation of "Synthetic APerTure UltraSound".
+
+# Example raw and focused images
+The following images are taken from the thesis to illustrate some of the applications of the algorithms in the toolbox. The original figure numbering and captions have been included for context.
+
+## Bottom drilled holes in PMMA and aluminium blocks
+
+![Setup](graphics/AcrylicGlassAndAluminiumLayers_Setup.png)
+
+![3D rendering of holes](graphics/AcrylicGlassAndAluminiumLayers_3DRender.png)
+
+![Raw data surface plot](graphics/AcrylicGlassAndAluminiumLayers_RawData.png)
+
+![Focused image surface plot](graphics/AcrylicGlassAndAluminiumLayers_Focused.png)
+
+
+## Objects placed on cylindrical surface
+
+![Setup](graphics/ObjectsInPipe_Setup.png)
+
+![Raw and focused images](graphics/ObjectsInPipe_Images.png)
+
+## Rusted pipe imaged from inside
+![Setup](graphics/RustedPipeImaging_Setup.png)
+
+![Photo of rusted pipe](graphics/RustedPipeInterior.png)
+
+![Raw and focused image slices](graphics/RustedPipe_Slices_RawAndFocused.png)
+
+
 
 
 # Algorithms
@@ -19,16 +49,7 @@ The MULOK algorithm is a multi-layer version of the method known as Stolt migrat
 
 The CPSM algorithm is an adaptation of the PSM algorithm to a cylindrical imaging geometry (transducer pointing outward from cylindrical scanning surface). The solutions to the wave equation in a cylindrical geometry are Hankel functions. These can be used to extrapolate the wavefield, but are generally very time-consuming to compute. The algorithm also includes two alternative transfer functions which are approximate but much faster.
 
-# Example raw and focused image
-The following images are taken from chapter 7 of the thesis to illustrate one application (of many) of the algorithms in the toolbox.
 
-![Setup](graphics/ObjectsInPipe_Setup.png)
-
-The images below show raw and focused ultrasonic images.
-
-![Raw and focused images](graphics/ObjectsInPipe_Images.png)
-
-Again note that this is only a single example, chosen because it is visual and intuitive. It does not illustrate how the toolbox also can handle cartesian geometries and multilayered media.
 
 # Organization
 The toolbox is organized into the following folders:
