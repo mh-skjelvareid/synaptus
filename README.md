@@ -1,8 +1,7 @@
-# Synaptus
-A Matlab/Octave toolbox for synthetic aperture ultrasound imaging
+**License:** [![License](https://img.shields.io/badge/License-GNU_GPLv3-orange.svg)](https://github.com/mh-skjelvareid/synaptus/blob/master/LICENSE.md)
 
-# License disclaimer
-This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version. This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details. You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# Summary
+Synaptus is a Matlab/Octave toolbox for synthetic aperture or array imaging. It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar). The toolbox focuses on algorithms implemented in the Fourier domain and on multilayered structures (e.g. water, metal, rock). 
 
 
 # Background
