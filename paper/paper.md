@@ -18,6 +18,8 @@ bibliography: paper.bib
 
 ---
 
+**NOTE:** This is a _draft_ version of a paper submitted to the Journal of Open Source Software (JOSS).
+
 # Summary
 `Synaptus` is a toolbox made for focusing ultrasound images. It can, however, also be used on data acquired using similar imaging principles, e.g. sonar and radar images.
 
