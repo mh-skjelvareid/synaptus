@@ -80,7 +80,7 @@ _Figure 2: 3D rendering of bottom drilled holes in stacked blocks._
 _Figure 3: 3D rendering of ultrasonic raw data. Reflections from bottom drilled holes are visualized by creating isosurfaces drawn at 1/5 of the maximum amplitude within each layer._
 
 ![Figure 4](../graphics/AcrylicGlassAndAluminiumLayers_Focused_NoCaption.png)
-_Figure 4: Images focused using the 3D version of the PSM algorithm._
+_Figure 4: Focused image of the the flat-bottom holes in the acrylic glass and aluminium layers, created by the PSM algorithm included in `Synaptus`._
 
 
 # Acknowledgements
