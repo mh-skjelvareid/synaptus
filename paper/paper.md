@@ -74,7 +74,7 @@ Figure 4 shows the focused image after processing the raw data with the PSM algo
 _Figure 1: Overview of experiment setup, showing acrylic glass and aluminium blocks with bottom-drilled holes, stacked on top of each other and immersed in water. (a) Seen from side. (b) Seen from above. All dimensions are in mm._
 
 ![Figure 2](../graphics/AcrylicGlassAndAluminiumLayers_3DRender_NoCaption.png)
-_Figure 2: 3D rendering of bottom drilled holes in stacked blocks._
+_Figure 2: 3D rendering of flat-bottom holes in stacked blocks._
 
 ![Figure 3](../graphics/AcrylicGlassAndAluminiumLayers_RawData_NoCaption.png)
 _Figure 3: 3D rendering of ultrasonic raw data (envelope). Reflections from bottom drilled holes are visualized by creating isosurfaces drawn at 1/5 of the maximum amplitude within each layer._
