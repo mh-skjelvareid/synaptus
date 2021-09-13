@@ -54,10 +54,43 @@ The core algorithms are written to be efficient and flexible. However, the code 
 * Alain Plattner at California State University (Fresno, USA), who adapted the code for use in a course on ground penetrating radar. The code is now part of the "Near Surface Geophysics" repository on GitHub [@NSGeophysics2017].
 * Shiwei Wu at Zhejiang University (Hangzhou, China), who built on code from `Synaptus` in his work on imaging cylindrical objects (e.g. pipes) using an external rotating transducer [@wu2015synthetic].
 * Reza Zahiri at [DarkVision](www.darkvisiontech.com) who wanted to use the algorithms in `Synaptus` to process array data, and who insipred the addition of an algorithm for processing array data.
+* Drew Taylor and Prasad Gogineni at the Remote Sensing Center, University of Alabama, who have used code from `Synaptus` to focus radar measurements of ice layering in Antarctica (part of the "Beyond EPICA" project [@beyond_epica]).
 
 A number of open source toolboxes related to ultrasound imaging are publicly available, including e.g. Field II [@field2], K-wave [@kwave] and the UltraSound ToolBox [@rodriguez2017]. However, most such toolboxes focus on medical applications, and none (to my knowledge) have implementations of the algorithms in the `Synaptus` toolbox.
 
 Although the toolbox was first published as a collection of algorithms and datasets developed during a PhD program, the repository is intended to be an open and live development project. Contributions in the form of datasets from new imaging geometries (e.g. differently shaped arrays or layered media) are particularly welcome, as they provide the foundation for developing algorithms for these geometries. However, contributions in the form of code, feature requests or issue reports are all very much appreciated. Given the popularity and availability of Python, a Python implementation of the toolbox algorithms is also seen as a natural continuation of the project.
+
+# Example use
+The following example was originally presented in [@Skjelvareid2012c], and is included here to give a more visual and intuitive sense of how `Synaptus` can create a focused image from raw ultrasonic data. For the sake of brevity, only a short description is given here, but the full details of the experiment can be found in [@Skjelvareid2012c] and [@Skjelvareid2012b].
+
+Two test blocks, one made of acrylic glass and the other of aluminium, were manufactured for the experiment. Each block had four flat-bottom holes
+with 3 mm diameter, spaced 20 mm apart. Such holes constitute point-like scatterers for ultrasonic imaging, and enable direct evaluation of the performance of focusing algorithms. The blocks were immersed in water, and the imaging geometry as a whole thus consisted of three layers with distinct sound wave velocities; 1480 m/s, 2730 m/s and 6320 m/s for water, acrylic glass and aluminium, respectively. The test blocks were imaged using a single 2.25 MHZ, 6 mm transducer, with a 1 mm spatial sampling interval. The imaging geometry is shown in Figure 1 and 2.
+
+The raw data from the ultrasonic scan is shown in Figure 3, with isosurfaces generated based on the ultrasonic responses from the flat-bottom holes. The image shows how the response from each hole is fairly broad, especially in the lowest layer. This effect is due to the width of the ultrasonic beam increasing with depth.
+
+Figure 4 shows the focused image after processing the raw data with the PSM algorithm in `Synaptus`, visualized in the same way as the raw data. The image shows how the responses from flat-bottom holes are much narrower, indicating a higher lateral resolution in the focused image. The resolution is also independent of depth. This is a well-known feature of synthetic aperture focusing, of which the PSM algorithm is an example.
+
+<figure>
+<img src="../graphics/AcrylicGlassAndAluminiumLayers_Setup_NoCaption.png" width="700">
+<figcaption><i>Figure 1: Overview of experiment setup, showing acrylic glass and aluminium blocks with bottom-drilled holes, stacked on top of each other and immersed in water. (a) Seen from side. (b) Seen from above. All dimensions are in mm. </i></figcaption>
+</figure>
+
+<figure>
+<img src="../graphics/AcrylicGlassAndAluminiumLayers_3DRender_NoCaption.png" width="450">
+<figcaption><i> Figure 2: 3D rendering of bottom drilled holes in stacked blocks. </i></figcaption>
+</figure>
+
+<figure>
+<img src="../graphics/AcrylicGlassAndAluminiumLayers_RawData_NoCaption.png" width="450">
+<figcaption> <i> Figure 3: 3D rendering of ultrasonic raw data. Reflections from bottom drilled holes are visualized by creating isosurfaces drawn at 1/5 of the maximum amplitude within each layer. </i> </figcaption>
+</figure>
+
+<figure>
+<img src="../graphics/AcrylicGlassAndAluminiumLayers_Focused_NoCaption.png" width="450">
+<figcaption> <i> Figure 4: Images focused using the 3D version of the PSM algorithm. </i> </figcaption>
+</figure>
+
+
 
 # Acknowledgements
 The `Synaptus` toolbox was developed as part of PhD work by Martin H. Skjelvareid, financed in equal parts by [Breivoll Inspection Technologies](https://breivoll.eu/) and the Norwegian Research Council (project number 189624).

@@ -11,33 +11,33 @@ The toolbox was originally written by Martin H. Skjelvareid, as a collection of 
 The name of the toolbox is an abbreviation of "Synthetic APerTure UltraSound".
 
 # Example raw and focused images
-The following images are taken from the thesis to illustrate some of the applications of the algorithms in the toolbox. The original figure numbering and captions have been included for context.
+The following images are taken from the thesis to illustrate some of the applications of the algorithms in the toolbox. The original figure numbering and captions have been included for context. See the `thesis.pdf` file under the 'docs' folder for further details.
 
 ## Bottom drilled holes in PMMA and aluminium blocks
 
-![Setup](graphics/AcrylicGlassAndAluminiumLayers_Setup.png)
+<img src="graphics/AcrylicGlassAndAluminiumLayers_Setup.png" width="600">
 
-![3D rendering of holes](graphics/AcrylicGlassAndAluminiumLayers_3DRender.png)
+<img src="graphics/AcrylicGlassAndAluminiumLayers_3DRender.png" width="550">
 
-![Raw data surface plot](graphics/AcrylicGlassAndAluminiumLayers_RawData.png)
+<img src="graphics/AcrylicGlassAndAluminiumLayers_RawData.png" width="550">
 
-![Focused image surface plot](graphics/AcrylicGlassAndAluminiumLayers_Focused.png)
+<img src="graphics/AcrylicGlassAndAluminiumLayers_Focused.png" width="650">
 
 
 ## Objects placed on cylindrical surface
 
-![Setup](graphics/ObjectsInPipe_Setup.png)
+<img src="graphics/ObjectsInPipe_Setup.png" width="550">
 
-![Raw and focused images](graphics/ObjectsInPipe_Images.png)
+<img src="graphics/ObjectsInPipe_Images.png" width="600">
+
 
 ## Rusted pipe imaged from inside
-![Setup](graphics/RustedPipeImaging_Setup.png)
 
-![Photo of rusted pipe](graphics/RustedPipeInterior.png)
+<img src="graphics/RustedPipeImaging_Setup.png" width="600">
 
-![Raw and focused image slices](graphics/RustedPipe_Slices_RawAndFocused.png)
+<img src="graphics/RustedPipeInterior.png" width="600">
 
-
+<img src="graphics/RustedPipe_Slices_RawAndFocused.png" width="600">
 
 
 # Algorithms
@@ -68,6 +68,8 @@ Download the toolbox and add (at least) the "core" folder to the Matlab / Octave
 # Contributing
 Contributions to the toolbox are most welcome; bug reports, suggestions for changes, datasets, new algorithms - anything you think is relevant. See [CONTRIBUTING](CONTRIBUTING.md) file for further details.
 
+# License
+[![License](https://img.shields.io/badge/License-GNU_GPLv3-orange.svg)](https://github.com/mh-skjelvareid/synaptus/blob/master/LICENSE.md)
 
 # Acknowledgements
 - The main elements of the toolbox were developed by M. H. Skjelvareid, working as an industrial PhD working at Breivoll Inspection Technologies (BIT) in Tromsø, Norway. The work was financed in equal parts by BIT and the Norwegian Research Council.
