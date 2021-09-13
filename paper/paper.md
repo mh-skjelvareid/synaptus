@@ -70,6 +70,9 @@ The raw data from the ultrasonic scan is shown in Figure 3, with isosurfaces gen
 
 Figure 4 shows the focused image after processing the raw data with the PSM algorithm in `Synaptus`, visualized in the same way as the raw data. The image shows how the responses from flat-bottom holes are much narrower, indicating a higher lateral resolution in the focused image. The resolution is also independent of depth. This is a well-known feature of synthetic aperture focusing, of which the PSM algorithm is an example.
 
+![Figure 1](../graphics/AcrylicGlassAndAluminiumLayers_Setup_NoCaption.png)
+_Figure 1: Overview of experiment setup, showing acrylic glass and aluminium blocks with bottom-drilled holes, stacked on top of each other and immersed in water. (a) Seen from side. (b) Seen from above. All dimensions are in mm._
+
 <figure>
 <img src="../graphics/AcrylicGlassAndAluminiumLayers_Setup_NoCaption.png" width="700">
 <figcaption><i>Figure 1: Overview of experiment setup, showing acrylic glass and aluminium blocks with bottom-drilled holes, stacked on top of each other and immersed in water. (a) Seen from side. (b) Seen from above. All dimensions are in mm. </i></figcaption>
