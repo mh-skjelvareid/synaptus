@@ -51,7 +51,7 @@ The core algorithms are written to be efficient and flexible. However, the code 
 
 `Synaptus` has been available on GitHub and Mathworks File Exchange (MFE) since 2016. At the time of writing it has been downloaded 959 times from MFE, and 8 out of 9 reviewers have rated it 5 stars (of 5 possible). The author has also been contacted directly by researchers who have found the toolbox useful, including:
 
-* Alain Plattner at California State University (Fresno, USA), who adapted the code for use in a course on ground penetrating radar. The code is now part of the "Near Surface Geophysics" repository on GitHub [@NSGeophysics2017].
+* Alain Plattner at California State University (Fresno, USA), who adapted the code for use in a course on ground penetrating radar. The code is now part of the "Near Surface Geophysics" repository on GitHub [@stolt_fk_mig].
 * Shiwei Wu at Zhejiang University (Hangzhou, China), who built on code from `Synaptus` in his work on imaging cylindrical objects (e.g. pipes) using an external rotating transducer [@wu2015synthetic].
 * Reza Zahiri at [DarkVision](www.darkvisiontech.com) who wanted to use the algorithms in `Synaptus` to process array data, and who insipred the addition of an algorithm for processing array data.
 * Drew Taylor and Prasad Gogineni at the Remote Sensing Center, University of Alabama, who have used code from `Synaptus` to focus radar measurements of ice layering in Antarctica (part of the "Beyond EPICA" project [@beyond_epica]).
