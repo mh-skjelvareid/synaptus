@@ -15,7 +15,7 @@ affiliations:
    index: 1
 date: 4 August 2021
 bibliography: paper.bib
-
+lang: en-GB
 ---
 
 **NOTE:** This is a _draft_ version of a paper submitted to the Journal of Open Source Software (JOSS).
