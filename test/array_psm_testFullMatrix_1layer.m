@@ -1,6 +1,7 @@
-% Note: The dataset used here is a full-matrix recording of a copper block
-% with side-drilled holes immersed in water. This script is used to test
-% the ability of the algorithm to work on multilayer structures.
+% Note: The dataset used here is a full-matrix recording of a set of steel
+% pins submerged in water. The pins are examples of point-like scatterers
+% and are used to test the full matrix version of the PSM algorithm in a
+% single-layer scenario.
 
 %% Close / clear
 close all
@@ -11,7 +12,7 @@ clc
 addpath('../core','../misc')
 
 %% Load test data
-load('../datasets/ArraySteelPins.mat','MWB','data')
+load('../datasets/ArraySteelPins.mat','data','MWB')
 mwb = MWB*1e-6;         % Measurement window begin
 
 %% Parameters
