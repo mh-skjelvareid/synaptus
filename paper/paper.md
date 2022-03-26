@@ -42,7 +42,7 @@ The thesis is included in the repository and contains a full list of references.
 
 # Statement of need
 
-`Synaptus` is a Matlab / Octave toolbox for synthetic aperture / array ultrasound imaging. The core algorithms have been written as a small set of functions that can handle many different types of datasets (2D / 3D data, single- or multilayered media, cartesian or cylindrical geometries). The code is highly vectorized, taking advantage of optimized libraries for linear algebra in Matlab / Octave. In addition, the algorithms operate in the Fourier domain, which in many cases is more computationally efficient that operating in the time-space domain ("delay-and-sum").
+`Synaptus` is a Matlab / Octave toolbox for creating focused images from raw ultrasonic data using the concept of synthetic aperture. The core algorithms have been written as a small set of functions that can handle many different types of datasets (2D / 3D data, single- or multilayered media, cartesian or cylindrical geometries). The code is highly vectorized, taking advantage of optimized libraries for linear algebra in Matlab / Octave. In addition, the algorithms operate in the Fourier domain, which in many cases is more computationally efficient that operating in the time-space domain ("delay-and-sum").
 
 The toolbox includes a number of scripts that test the core algorithms by running them on a set of relevant datasets. The datasets represent a valuable resouce in themselves, given that there are very few publicly available NDT ultrasound datasets. The datasets can e.g. be used as benchmarks by researchers working on new algorithms.
 
@@ -50,12 +50,14 @@ The core algorithms are written to be efficient and flexible. However, the code 
 
 `Synaptus` has been available on GitHub and Mathworks File Exchange (MFE) since 2016. At the time of writing it has been downloaded 959 times from MFE, and 8 out of 9 reviewers have rated it 5 stars (of 5 possible). The author has also been contacted directly by researchers who have found the toolbox useful, including:
 
-* Alain Plattner at California State University (Fresno, USA), who adapted the code for use in a course on ground penetrating radar. The code is now part of the "Near Surface Geophysics" repository on GitHub [@stolt_fk_mig].
+* Alain Plattner at California State University (Fresno, USA), who adapted the Stolt fk migration algorithm in `learn_stolt.m` for use in a course on ground penetrating radar. His adapted code is now part of the "Near Surface Geophysics" repository on GitHub [@stolt_fk_mig].
 * Shiwei Wu at Zhejiang University (Hangzhou, China), who built on code from `Synaptus` in his work on imaging cylindrical objects (e.g. pipes) using an external rotating transducer [@wu2015synthetic].
 * Reza Zahiri at [DarkVision](www.darkvisiontech.com) who wanted to use the algorithms in `Synaptus` to process array data, and who insipred the addition of an algorithm for processing array data.
 * Drew Taylor and Prasad Gogineni at the Remote Sensing Center, University of Alabama, who have used code from `Synaptus` to focus radar measurements of ice layering in Antarctica (part of the "Beyond EPICA" project [@beyond_epica]).
 
 A number of open source toolboxes related to ultrasound imaging are publicly available, including e.g. Field II [@field2], K-wave [@kwave] and the UltraSound ToolBox [@rodriguez2017]. However, most such toolboxes focus on medical applications, and none (to my knowledge) have implementations of the algorithms in the `Synaptus` toolbox.
+
+The concept of synthetic aperture focusing used in `Synaptus` can be used for several modes of imaging, but the most well-known is probably synthetic aperture radar (SAR) satellite imaging. This is a huge field, both commercially and academically, and there are multiple open source software packages related to processing of SAR data available, e.g. OSARIS [@osaris] and SNAP [@snap]. However, such packages are often highly specialized for processing of radar data, making them hard to apply to other types of pulse-echo data (e.g. ultrasonic). SAR imaging is also limited to the case of a single propagating medium (vacuum/air), and SAR processors can therefore not be applied to the multilayer case that `Synaptus` addresses.
 
 Although the toolbox was first published as a collection of algorithms and datasets developed during a PhD program, the repository is intended to be an open and live development project. Contributions in the form of datasets from new imaging geometries (e.g. differently shaped arrays or layered media) are particularly welcome, as they provide the foundation for developing algorithms for these geometries. However, contributions in the form of code, feature requests or issue reports are all very much appreciated. Given the popularity and availability of Python, a Python implementation of the toolbox algorithms is also seen as a natural continuation of the project.
 

@@ -76,35 +76,39 @@ if ~isempty(param.tInterface)
     end
 end
 
-%% Add grid lines
-for ii = 1:nPhiGrid
-    [xTick yTick] = pol2cart(phiGrid(ii)*[1 1],ttRef0([1 end]));
-    plot(xTick,yTick,gridStyle,'Color',gridColor);
+%% Add phi and time grids with labels
+if (~isempty(tGrid) && ~isempty(phiGrid))
+
+  % Add grid lines
+  for ii = 1:nPhiGrid
+      [xTick yTick] = pol2cart(phiGrid(ii)*[1 1],ttRef0([1 end]));
+      plot(xTick,yTick,gridStyle,'Color',gridColor);
+  end
+
+  for ii = 1:nTGrid
+      [xTick yTick] = pol2cart(phi,tGrid(ii)+2*(R1/c1));
+      plot(xTick,yTick,gridStyle,'Color',gridColor);
+  end
+
+  % Add grid text labels
+  [xTextT,yTextT] = pol2cart(phi(1),tGridRef0);
+  text(xTextT,yTextT-0.6*param.tLabelOffset*yRange,num2str(tGrid(:)*1e6),...
+      'FontSize',param.fontSize)
+
+  [xTextPhi,yTextPhi] = pol2cart(phiGrid,ttRef0(end));
+  text(xTextPhi+0.05*xRange,yTextPhi-0.03*yRange,num2str(phiGrid(:)*(180/pi)),...
+      'FontSize',param.fontSize)
+
+  % Add time label
+  [xTLabel, yTLabel] = pol2cart(phi(1),ttRef0(round(nT/2)));
+  text(xTLabel,yTLabel-param.tLabelOffset*yRange,'t [us]',...
+      'rotation',90+phi(1)*(180/pi),'FontSize',param.fontSize)
+
+  % Add angle label
+  [xPhiLabel, yPhiLabel] = pol2cart(phi(round(nPhi/2)),ttRef0(end));
+  text(xPhiLabel+0.1*xRange, yPhiLabel,'\phi [deg]','FontSize',param.fontSize)
+
 end
-
-for ii = 1:nTGrid
-    [xTick yTick] = pol2cart(phi,tGrid(ii)+2*(R1/c1));
-    plot(xTick,yTick,gridStyle,'Color',gridColor);
-end
-
-%% Add grid text labels
-[xTextT,yTextT] = pol2cart(phi(1),tGridRef0);
-% text(xTextT,yTextT-0.1*yRange,num2str(tGrid(:)*1e6))
-text(xTextT,yTextT-0.6*param.tLabelOffset*yRange,num2str(tGrid(:)*1e6),...
-    'FontSize',param.fontSize)
-
-[xTextPhi,yTextPhi] = pol2cart(phiGrid,ttRef0(end));
-text(xTextPhi+0.05*xRange,yTextPhi-0.03*yRange,num2str(phiGrid(:)*(180/pi)),...
-    'FontSize',param.fontSize)
-
-%% Add time label
-[xTLabel, yTLabel] = pol2cart(phi(1),ttRef0(round(nT/2)));
-text(xTLabel,yTLabel-param.tLabelOffset*yRange,'t [us]',...
-    'rotation',90+phi(1)*(180/pi),'FontSize',param.fontSize)
-
-%% Add angle label
-[xPhiLabel, yPhiLabel] = pol2cart(phi(round(nPhi/2)),ttRef0(end));
-text(xPhiLabel+0.1*xRange, yPhiLabel,'\phi [deg]','FontSize',param.fontSize)
 
 %% Set axes
 axis normal

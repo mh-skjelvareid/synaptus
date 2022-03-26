@@ -72,34 +72,39 @@ if ~isempty(param.rInterface)
     end
 end
 
-%% Add grid lines
-for ii = 1:nPhiGrid
-    [xTick yTick] = pol2cart(phiGrid(ii)*[1 1],[rMin rMax]);
-    plot(xTick,yTick,gridStyle,'Color',gridColor,'LineWidth',1.5);
+%% Add phi and r grids with labels
+if (~isempty(phiGrid) && ~isempty(rGrid))
+
+  % Add grid lines
+  for ii = 1:nPhiGrid
+      [xTick yTick] = pol2cart(phiGrid(ii)*[1 1],[rMin rMax]);
+      plot(xTick,yTick,gridStyle,'Color',gridColor,'LineWidth',1.5);
+  end
+
+  for ii = 1:nRGrid
+      [xTick yTick] = pol2cart(phi,rGrid(ii));
+      plot(xTick,yTick,gridStyle,'Color',gridColor,'LineWidth',1.5);
+  end
+
+  % Add grid text labels (TODO: make placement adjustable?)
+  [xTextR,yTextR] = pol2cart(phi(1),rGrid);
+  text(xTextR,yTextR-0.08*yRange,num2str(rGrid(:)*1e3),...
+      'FontSize',param.fontSize)
+
+  [xTextPhi,yTextPhi] = pol2cart(phiGrid,rMax);
+  text(xTextPhi+0.05*xRange,yTextPhi-0.03*yRange,num2str(phiGrid(:)*(180/pi)),...
+      'FontSize',param.fontSize)
+
+  % Add range label (TODO: make placement adjustable?)
+  [xRLabel, yRLabel] = pol2cart(phi(1),(rMin+rMax)/2);
+  text(xRLabel,yRLabel-0.14*yRange,'r [mm]','rotation',90+phi(1)*(180/pi),...
+      'FontSize',param.fontSize)
+
+  % Add angle label (TODO: make placement adjustable?)
+  [xPhiLabel, yPhiLabel] = pol2cart((phi(1)+phi(end))/2,rMax);
+  text(xPhiLabel+0.1*xRange, yPhiLabel,'\phi [deg]','FontSize',param.fontSize)
+
 end
-
-for ii = 1:nRGrid
-    [xTick yTick] = pol2cart(phi,rGrid(ii));
-    plot(xTick,yTick,gridStyle,'Color',gridColor,'LineWidth',1.5);
-end
-
-%% Add grid text labels (TODO: make placement adjustable?)
-[xTextR,yTextR] = pol2cart(phi(1),rGrid);
-text(xTextR,yTextR-0.08*yRange,num2str(rGrid(:)*1e3),...
-    'FontSize',param.fontSize)
-
-[xTextPhi,yTextPhi] = pol2cart(phiGrid,rMax);
-text(xTextPhi+0.05*xRange,yTextPhi-0.03*yRange,num2str(phiGrid(:)*(180/pi)),...
-    'FontSize',param.fontSize)
-
-%% Add range label (TODO: make placement adjustable?)
-[xRLabel, yRLabel] = pol2cart(phi(1),(rMin+rMax)/2);
-text(xRLabel,yRLabel-0.14*yRange,'r [mm]','rotation',90+phi(1)*(180/pi),...
-    'FontSize',param.fontSize)
-
-%% Add angle label (TODO: make placement adjustable?)
-[xPhiLabel, yPhiLabel] = pol2cart((phi(1)+phi(end))/2,rMax);
-text(xPhiLabel+0.1*xRange, yPhiLabel,'\phi [deg]','FontSize',param.fontSize)
 
 %% Set axes
 axis tight
