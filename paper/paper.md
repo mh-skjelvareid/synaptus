@@ -48,7 +48,7 @@ The toolbox includes a number of scripts that test the core algorithms by runnin
 
 The core algorithms are written to be efficient and flexible. However, the code may not be easy to understand for researchers who are not yet familiar with the theory. To accomodate those wanting to better understand the concepts, a set of scripts with simplified algorithms have been included. These scripts also produce figures showing raw data, intermediate steps and final focused images.
 
-`Synaptus` has been available on GitHub and Mathworks File Exchange (MFE) since 2016. At the time of writing it has been downloaded 959 times from MFE, and 8 out of 9 reviewers have rated it 5 stars (of 5 possible). The author has also been contacted directly by researchers who have found the toolbox useful, including:
+`Synaptus` has been available on GitHub and Mathworks File Exchange (MFE) since 2016. At the time of writing it has been downloaded over 1000 times from MFE, and 9 out of 10 reviewers have rated it 5 out of 5 stars. The author has also been contacted directly by researchers who have found the toolbox useful, including:
 
 * Alain Plattner at California State University (Fresno, USA), who adapted the Stolt fk migration algorithm in `learn_stolt.m` for use in a course on ground penetrating radar. His adapted code is now part of the "Near Surface Geophysics" repository on GitHub [@stolt_fk_mig].
 * Shiwei Wu at Zhejiang University (Hangzhou, China), who built on code from `Synaptus` in his work on imaging cylindrical objects (e.g. pipes) using an external rotating transducer [@wu2015synthetic].
