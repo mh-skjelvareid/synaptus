@@ -3,10 +3,13 @@ clearvars
 clc
 
 %% Add path to necessary functions
-addpath('../core','../misc')
+toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
+
+%Add core and misc path
+addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data, extract 2D slice and convert to double precision
-load('../datasets/CylScan3D_LeadSpheres','ptpz','fs','phiStep','zStep',...
+load(fullfile(toolboxPath,'datasets','CylScan3D_LeadSpheres.mat'),'ptpz','fs','phiStep','zStep',...
     'tDelay','r0','fLow','fHigh','cc');
 zSliceInd = 30;                         % Index for 2D slice from 3D dataset
 ptp = double(ptpz(:,:,zSliceInd));      % Extract slice, convert to double

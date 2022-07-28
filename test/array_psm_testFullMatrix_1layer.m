@@ -9,10 +9,13 @@ clearvars
 clc
 
 %% Add path to necessary functions
-addpath('../core','../misc')
+toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
+
+%Add core and misc path
+addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load test data
-load('../datasets/ArraySteelPins.mat','data','MWB')
+load(fullfile(toolboxPath,'datasets','ArraySteelPins.mat'),'data','MWB')
 mwb = MWB*1e-6;         % Measurement window begin
 
 %% Parameters
