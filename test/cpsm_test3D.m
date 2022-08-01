@@ -3,10 +3,13 @@ clearvars
 clc
 
 %% Add path to necessary functions
-addpath('../core','../misc')
+toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
 
-%% Load data, convert from single to double precision
-load('../datasets/CylScan3D_LeadSpheres','ptpz','fs','phiStep','zStep',...
+%Add core and misc path
+addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
+
+%% Load data and convert to double precision
+load(fullfile(toolboxPath,'datasets','CylScan3D_LeadSpheres.mat'),'ptpz','fs','phiStep','zStep',...
     'tDelay','r0','fLow','fHigh','cc');
 ptpz = double(ptpz);
 

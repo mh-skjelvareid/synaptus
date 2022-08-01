@@ -4,10 +4,13 @@ clearvars
 clc
 
 %% Add path to necessary functions
-addpath('../core','../misc')
+toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
+
+%Add core and misc path
+addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
-load('../datasets/CylScan3D_ObjectsInPipe','ptpz','fs','phiStep','zStep',...
+load(fullfile(toolboxPath,'datasets','CylScan3D_ObjectsInPipe.mat'),'ptpz','fs','phiStep','zStep',...
     'tDelay','r0','fLow','fHigh','cc');
 
 %% Gate out reflection from pipe surface (creates artefacts)

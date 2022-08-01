@@ -3,12 +3,15 @@ clearvars
 clc
 
 %% Add path to necessary functions
-addpath('../core','../misc')
+toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
+
+%Add core and misc path
+addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
-disp('Loading data'); 
-load('../datasets/PlaneScan3D_PlexiAluFBH.mat',...
-    'fs','ptxy','tDelay','fLow','fHigh','thick','xStep','yStep','cc')
+disp('Loading data');
+load(fullfile(toolboxPath,'datasets','PlaneScan3D_PlexiAluFBH.mat'),...
+    'fs','ptxy','tDelay','fLow','fHigh','thick','xStep','yStep','cc');
 
 %% Focus using PSM
 disp('Processing data'); 

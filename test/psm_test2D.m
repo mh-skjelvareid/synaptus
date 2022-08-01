@@ -3,11 +3,15 @@ clearvars
 clc
 
 %% Add path to necessary functions
-addpath('../core','../misc')
+toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
+
+%Add core and misc path
+addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
-load('../datasets/LineScan2D_PinsPlexiAluSDH.mat','fs','ptx','tDelay',...
-    'fLow','fHigh','thick','xStep','cc')
+disp('Loading data');
+load(fullfile(toolboxPath,'datasets','LineScan2D_PinsPlexiAluSDH.mat'),...
+    'fs','ptx','tDelay','fLow','fHigh','thick','xStep','cc');
 
 %% Parameters
 [nT,nX] = size(ptx);                % Size of B-scan matrix
