@@ -81,7 +81,7 @@ Running Synaptus on Octave requires:
 
 
 # Installation
-Download the toolbox and add (at least) the "core" folder to the Matlab / Octave path. Run the scripts found under "test" to see example usage of the different algorithms. Open and run the scripts under "learn" to see simplified versions of some of the algorithms, with plots.
+Download the toolbox and add (at least) the "core" folder to the Matlab / Octave path. Run the scripts found under "test" to see example usage of the different algorithms. To run all the tests one after another, use the script "tests_runAll.m". Open and run the scripts under "learn" to see simplified versions of some of the algorithms, with plots.
 
 # Documentation
 The core algorithms are documented by function descriptions in the standard Matlab/Octave style. Use the `help` command to display documentation for a given function, e.g. `help psm`. The PhD thesis in the "docs" folder describes the theory behind the core algorithms.
