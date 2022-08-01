@@ -187,7 +187,7 @@ im = cell(nL,1);            % Preallocate image cell structure
 for ll = 1:nL
     % Progress update
     disp('*************************')
-    disp(['Processing layer ' num2str(ll) ' of ' num2str(ll)])
+    disp(['Processing layer ' num2str(ll) ' of ' num2str(nL)])
     disp('*************************')
 
     % Calculate z-axis wave number KZ for transmitted (downgoing) waves
