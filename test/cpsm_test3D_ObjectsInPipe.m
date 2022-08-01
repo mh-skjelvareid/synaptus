@@ -1,7 +1,13 @@
 %% Close / clear
 close all
 clearvars
-clc
+
+%% Show test header (useful when run as part of test suite)
+disp('-----------------------------------------------------------------')
+disp('-----        SYNAPTUS TOOLBOX TEST: cpsm_test3D             -----')
+disp('-----     CPSM, 3D dataset, objects placed inside pipe      -----')
+disp('-----------------------------------------------------------------')
+disp(' ')
 
 %% Add path to necessary functions
 toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
@@ -10,6 +16,7 @@ toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
 addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
+disp('Loading data')
 load(fullfile(toolboxPath,'datasets','CylScan3D_ObjectsInPipe.mat'),'ptpz','fs','phiStep','zStep',...
     'tDelay','r0','fLow','fHigh','cc');
 
@@ -26,10 +33,11 @@ rEnd = rStart + (size(ptpz,1)/fs)*(cc/2);
 transFunc = 'haun';     % Transfer function, options 'haun', 'gardner', 'exact'
 
 %% Focus
-tic;
+disp('Processing data')
+tic
 [im,phiIm,rIm,zIm] = cpsm(ptpz,fs,tDelay,cc,fLow,fHigh,[phiStep zStep],r0,...
     rStep,rStart,rEnd,'transFunc',transFunc);
-disp(['Total processing time: ' num2str(toc) ' seconds.'])
+toc 
 
 %% Calculate raw signal envelope
 envRaw = zeros(size(ptpz));
@@ -57,3 +65,6 @@ caxis([-30 0])
 xlabel('z [mm]')
 ylabel('phi [deg]')
 title('Focused image C-scan (maximum envelope amplitude, dB)')
+
+%% Add blank line (nicer formatting for test text output).
+disp(' ')

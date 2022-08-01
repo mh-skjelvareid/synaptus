@@ -5,15 +5,26 @@
 %% Close / clear
 close all
 clearvars
-clc
+
+%% Show test header (useful when run as part of test suite)
+disp('-----------------------------------------------------------------')
+disp('-----   SYNAPTUS TEST: array_psm_testFullMatrix_2layer.m    -----')
+disp('-----          PSM algorithm adapted for arrays             -----')
+disp('-----   Full matrix dataset from linear array, 2 layer      -----')
+disp('-----------------------------------------------------------------')
+disp('')
+disp('NOTE: Loading data may generate warnings, including "no constructor".') 
+disp('      These can be safely ignored.')
+disp(' ')
 
 %% Add path to necessary functions
 toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
 
-%Add core and misc path
+% Add core and misc path
 addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load test data
+disp('Loading data')
 load(fullfile(toolboxPath,'datasets','ArrayCuBlockStationary.mat'),'data','MWB');
 mwb = MWB*1e-6;         % Measurement window begin
 
@@ -41,7 +52,7 @@ xPlot = (0:(nX-1))*aPitch;
 figure
 colormap(gray(256))
 imagesc(xPlot*1e3,tPlot*1e6,logImage(ptxw(:,:,round(nW/2))))
-set(gca,'CLim',[-50 0])
+caxis([-50 0])
 colorbar
 xlabel('x [mm]')
 ylabel('t [us]')
@@ -49,16 +60,22 @@ title({'Envelope of wavefield (dB) received by all elements',...
     ' when middle element is excited'})
 
 %% Focus
+disp('Processing data')
+tic
 txDelay = eye(nX) - 1;  % Zero transmit delay, only one element at a time
 [im,xIm,zIm] = array_psm(ptxw,fs,txDelay,cc,thick,fLow,fHigh,aPitch,...
     'pulseDelay',pulseDelay,'skipLayers',1);
-
+toc 
+    
 %%
 figure
 colormap(gray(256))
 imagesc(xIm*1e3,zIm{2}*1e3,logImage(im{2}))
 colorbar
-set(gca,'CLim',[-50 -10])
+caxis([-50 -10])
 xlabel('x [mm]')
 ylabel('z [mm]')
 title({'Focused image (dB) of immersed copper block ', ' based on all transmitted waves'})
+
+%% Add blank line (nicer formatting for test text output).
+disp(' ')

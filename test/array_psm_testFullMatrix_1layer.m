@@ -6,7 +6,14 @@
 %% Close / clear
 close all
 clearvars
-clc
+
+%% Show test header (useful when run as part of test suite)
+disp('-----------------------------------------------------------------')
+disp('-----   SYNAPTUS TEST: array_psm_testFullMatrix_1layer.m    -----')
+disp('-----          PSM algorithm adapted for arrays             -----')
+disp('-----   Full matrix dataset from linear array, 1 layer      -----')
+disp('-----------------------------------------------------------------')
+disp(' ')
 
 %% Add path to necessary functions
 toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
@@ -15,6 +22,7 @@ toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
 addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load test data
+disp('Loading data')
 load(fullfile(toolboxPath,'datasets','ArraySteelPins.mat'),'data','MWB')
 mwb = MWB*1e-6;         % Measurement window begin
 
@@ -42,23 +50,29 @@ xPlot = (0:(nX-1))*aPitch;
 figure
 colormap(gray(256))
 imagesc(xPlot*1e3,tPlot*1e6,logImage(ptxw(:,:,round(nW/2))))
-set(gca,'CLim',[-50 0])
+caxis([-50 0])
 colorbar
 xlabel('x [mm]')
 ylabel('t [us]')
 title('Data received by all elements when middle element is excited')
 
 %% Focus
+disp('Processing data')
+tic 
 txDelay = eye(nX) - 1;  % Zero transmit delay, only one element at a time
 [im,xIm,zIm] = array_psm(ptxw,fs,txDelay,cc,thick,fLow,fHigh,aPitch,...
     'pulseDelay',pulseDelay);
+toc
 
 %%
 figure
 colormap(gray(256))
 imagesc(xIm*1e3,zIm{1}*1e3,logImage(im{1}))
 colorbar
-set(gca,'CLim',[-40 0])
+caxis([-40 0])
 xlabel('x [mm]')
 ylabel('z [mm]')
 title({'Focused image (dB) based on all transmitted waves'})
+
+%% Add blank line (nicer formatting for test text output).
+disp(' ')

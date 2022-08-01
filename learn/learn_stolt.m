@@ -30,7 +30,7 @@
 %   martin.hansen.skjelvareid@gmail.com
 
 close all
-clear all
+clearvars
 
 %% Add path to necessary functions
 toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path

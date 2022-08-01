@@ -1,6 +1,12 @@
 close all
 clearvars
-clc
+
+%% Show test header (useful when run as part of test suite)
+disp('-----------------------------------------------------------------')
+disp('-----         SYNAPTUS TOOLBOX TEST: mulok_test3D           -----')
+disp('-----      Multi-layer omega-k migration, 3D dataset        -----')
+disp('-----------------------------------------------------------------')
+disp(' ')
 
 %% Add path to necessary functions
 toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
@@ -21,7 +27,10 @@ disp('Processing data');
 tic
 [im,xIm,yIm,zIm] = mulok(ptxy,fs,tDelay,cc,thick,fLow,fHigh,[xStep yStep],...
     'fc',fc,'interpol',interpol);
-toc;
+toc
 
 %% Plot raw and focused image
 test3D_plot
+
+%% Add blank line (nicer formatting for test text output).
+disp(' ')

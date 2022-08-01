@@ -1,6 +1,12 @@
 close all
 clearvars
-clc
+
+%% Show test header (useful when run as part of test suite)
+disp('-----------------------------------------------------------------')
+disp('-----         SYNAPTUS TOOLBOX TEST: mulok_test2D           -----')
+disp('-----      Multi-layer omega-k migration, 2D dataset        -----')
+disp('-----------------------------------------------------------------')
+disp(' ')
 
 %% Add path to necessary functions
 toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
@@ -9,6 +15,7 @@ toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
 addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
+disp('Loading data')
 load(fullfile(toolboxPath,'datasets','LineScan2D_PinsPlexiAluSDH.mat'),'fs','ptx','tDelay',...
     'fLow','fHigh','thick','xStep','cc','fc');
 
@@ -20,6 +27,7 @@ xPlot = (0:(nX-1))*xStep;        % X vector for x axis
 interpol = 'linear';    % Stolt interpolation method, options 'linear', 'chirpz'
 
 %% Focus
+disp('Processing data')
 tic
 [im,xIm,zIm] = mulok(ptx,fs,tDelay,cc,thick,fLow,fHigh,xStep,'fc',fc,...
     'interpol',interpol);
@@ -29,7 +37,7 @@ toc
 figure
 imagesc(xPlot*1e3,tPlot*1e6,logImage(abs(hilbert(ptx))))
 colorbar
-set(gca,'CLim',[-30 0])
+caxis([-30 0])
 xlabel('X [mm]')
 ylabel('Time [\mu s]')
 title('Raw data')
@@ -39,8 +47,11 @@ figure
 for ii = 1:3
     subplot(3,1,ii)
     imagesc(xIm*1e3,zIm{ii}*1e3,logImage(im{ii}))
-    set(gca,'CLim',[-30 0])
+    caxis([-30 0])
     ylabel('Z [mm]')
     title(['Focused image, layer ' num2str(ii)])
 end
 xlabel('X [mm]')
+
+%% Add blank line (nicer formatting for test text output).
+disp(' ')
