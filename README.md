@@ -1,4 +1,6 @@
-[![License](https://img.shields.io/badge/License-GNU_GPLv3-orange.svg)](https://github.com/mh-skjelvareid/synaptus/blob/master/LICENSE.md)  [![DOI](https://zenodo.org/badge/48959003.svg)](https://zenodo.org/badge/latestdoi/48959003)
+**Cite Synaptus** (DOI): [![DOI](https://joss.theoj.org/papers/10.21105/joss.04185/status.svg)](https://doi.org/10.21105/joss.04185)
+
+**License:** [![License](https://img.shields.io/badge/License-GNU_GPLv3-orange.svg)](https://github.com/mh-skjelvareid/synaptus/blob/master/LICENSE.md)
 
 
 # Summary
@@ -96,6 +98,13 @@ Contributions to the toolbox are most welcome; bug reports, suggestions for chan
 
 # License
 [![License](https://img.shields.io/badge/License-GNU_GPLv3-orange.svg)](https://github.com/mh-skjelvareid/synaptus/blob/master/LICENSE.md)
+
+# Citing Synaptus
+If you use the Synaptus toolbox in your work, you should cite the following paper:
+
+Skjelvareid, M. H., (2022). _Synaptus: A Matlab/Octave toolbox for synthetic aperture ultrasound imaging._ Journal of Open Source Software, 7(76), 4185, https://doi.org/10.21105/joss.04185
+
+[![DOI](https://joss.theoj.org/papers/10.21105/joss.04185/status.svg)](https://doi.org/10.21105/joss.04185)
 
 # Acknowledgements
 - The main elements of the toolbox were developed by M. H. Skjelvareid, working as an industrial PhD working at Breivoll Inspection Technologies (BIT) in Tromsø, Norway. The work was financed in equal parts by BIT and the Norwegian Research Council.
