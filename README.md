@@ -1,4 +1,5 @@
-[![License](https://img.shields.io/badge/License-GNU_GPLv3-orange.svg)](https://github.com/mh-skjelvareid/synaptus/blob/master/LICENSE.md)
+[![License](https://img.shields.io/badge/License-GNU_GPLv3-orange.svg)](https://github.com/mh-skjelvareid/synaptus/blob/master/LICENSE.md)  [![DOI](https://zenodo.org/badge/48959003.svg)](https://zenodo.org/badge/latestdoi/48959003)
+
 
 # Summary
 Synaptus is a Matlab/Octave toolbox for synthetic aperture or array imaging. It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar). The toolbox focuses on algorithms implemented in the Fourier domain, and on imaging in multilayered structures (e.g. water, metal, rock).
