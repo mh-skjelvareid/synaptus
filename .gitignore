@@ -57,3 +57,7 @@ prelim
 *.asv
 *.bak
 *.sav
+experimental/psm_spec_input/RawDataMerged.tif
+experimental/psm_spec_input/email.txt
+experimental/psm_spec_input/FocusedDataMerged.mat
+experimental/psm_spec_input/FocusedDataMerged.tif
