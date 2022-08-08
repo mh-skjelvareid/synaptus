@@ -1,8 +1,8 @@
-function varargout = psm_spec_input(ptxy,omega,kx,tDelay,cc,thick,varargin)
+function varargout = psm_spec_input(Pokx,omega,kx,xStep,tDelay,cc,thick,varargin)
 % psm_spec_input - Phase Shift Migration with spectral input
 %
 %   Usage:
-%   [im,...] = psm_spec_input(ptxy,fs,tDelay,cc,thick,fLow,fHigh,sss,...)
+%   [im,...] = psm_spec_input(Pokx,omega,kx,tDelay,cc,thick,...)
 %
 %   Input parameters:
 %   Pokx     -  MxN matrix of spectral data, dimensions (omega,kx).
@@ -22,6 +22,13 @@ function varargout = psm_spec_input(ptxy,omega,kx,tDelay,cc,thick,varargin)
 %   xIm         -    x positions for pixels in im
 %   zIm         -    z positions for pixels in im
 %                       (cell array, different z res. for each layer)
+%
+%   This is a version of the PSM algorithm assuming that the data has
+%   already been Fourier transformed along the time dimension, and that the
+%   "passband" of the transducer/antenna/signal has been extracted. The
+%   motivation for doing this is that extraction of the passband represents
+%   a reduction in data size, making it easier to fit a large dataset into
+%   memory.
 %
 %   The derivation of the PSM algorithm is described in sections 3.5 and 5.1
 %   the PhD thesis "Synthetic aperture ultrasound imaging with application to
@@ -61,55 +68,55 @@ end
 nL = length(thick);                                 % Number of layers
 zIF = cumsum([0; thick(:)]);                        % z position of interfaces
 
-dzl = (cc/2)./(max(omega)/(2*pi));                  % Z resolution in each layer
+% dzl = (cc/2)./(max(omega)/(2*pi));                % Z resolution in each layer
+dzl = (cc/2)./((max(omega)-min(omega))/(2*pi));     % Z resolution in each layer
 zOffset = tDelay*(cc(1)/2);                         % Z offset due to tDelay
 nZ = ceil(sum([thick(1)-zOffset; thick(2:end).']./dzl(:)))+nL;  % Num. Z depths
 
 %% Create grids
 [OMEGA,KX] = ndgrid(omega,kx);
 
-
 %% Phase shift migration through each layer
 im = cell(nL,1);                        % Preallocate image cell structure
 zIm = cell(nL,1);                       % Preallocate z axis cell structure
 planeCount = 0;                         % Counter for # focused lines / planes
 
-fprintf('Progress: 0123');
+fprintf('Progress: ----');
 
 for ii = 1:nL
-    % Calculate z-axis wave number KZ
+    % Calculate z-axis wave number KZ (gridded)
     KZ2 = (2/cc(ii))^2*OMEGA.^2 - KX.^2;
 
-    realWaveIndex = (KZ2 >= 0);                 % Index of real kz
-    KZ = sqrt(KZ2.*realWaveIndex);              % Calculate kz
+    realWaveIndex = (KZ2 >= 0);             % Index of real kz
+    KZ = sqrt(KZ2.*realWaveIndex);          % Calculate kz
     Pokx = Pokx.*realWaveIndex;             % Mask out evanescent waves
-    phaseShift = exp(1i*KZ*dzl(ii));           % Phase shift for each z step
+    phaseShift = exp(1i*KZ*dzl(ii));        % Phase shift for each z step
 
     if ii == 1
-        PokxShifted = Pokx.*exp(1i*KZ*zOffset);    % Shift to tDelay depth
+        PokxShifted = Pokx.*exp(1i*KZ*zOffset);         % Shift to tDelay depth
         nPlanesZ = ceil((thick(1)-zOffset)/dzl(1))+1;   % Calc. # Z depths
         zIm{ii} = (0:(nPlanesZ-1))*dzl(ii) + zOffset;   % Calc. Z depths
     else
-        PokxShifted = Pokx;                         % Copy to local wavef.
+        PokxShifted = Pokx;                             % Copy to local wavef.
         nPlanesZ = ceil(thick(ii)/dzl(ii)) + 1;         % Calc. # Z depths
         zIm{ii} = (0:(nPlanesZ-1))*dzl(ii) + zIF(ii);   % Calc. Z depths
     end
 
-    iml = zeros(nPlanesZ,nX,nY);                        % Preallocate loc. image
+    iml = zeros(nPlanesZ,nKx);                          % Preallocate loc. image
 
     for jj = 1:nPlanesZ
-        Pkxky_t0 = sum(PokxShifted,1);                % Sum (IFFT at t=0)
-        imPlane = ifft(Pkxky_t0,nFFTx,2);               % FFT along x direction
-        iml(jj,:) = imPlane(1:nX);                      % Insert line in matrix
+        Pkxky_t0 = sum(PokxShifted,1);                  % Sum (IFFT at t=0)
+        imPlane = ifft(Pkxky_t0,nKx,2);                 % FFT along x direction
+        iml(jj,:) = imPlane(1:nKx);                     % Insert line in matrix
 
-        PokxShifted = PokxShifted.*phaseShift;      % Phase shift to next z
+        PokxShifted = PokxShifted.*phaseShift;          % Phase shift to next z
         planeCount = planeCount + 1;
         if ~mod(planeCount,25)                          % Progress information
             fprintf('\b\b\b\b%3d%%', round((planeCount*100)/nZ));
         end
     end
 
-    % Copy to cell structure
+    % Copy image for current layer to cell structure
     im{ii} = iml;
 
     % Migrate ref. wavefield to next interface
@@ -122,6 +129,6 @@ end
 fprintf('\b\b\b\b%3d%%\n', 100);
 
 %% Assign output
-varargout{1} = im;                                      % Focused image
-varargout{2} = param.xStart + (0:(nX-1))*sss(1);        % X-axis pixel positions
-varargout{3} = zIm;                                     % Z-axis pixel positions
+varargout{1} = im;                  % Focused image
+varargout{2} = (0:(nKx-1))*xStep;   % X-axis pixel positions
+varargout{3} = zIm;                 % Z-axis pixel positions
