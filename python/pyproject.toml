@@ -1,0 +1,51 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "synaptus"
+version = "0.2.0"
+dependencies = [
+  "ipykernel",
+  "matplotlib",
+  "numpy",
+  "scipy",
+]
+requires-python = ">=3.9"
+authors = [
+  {name = "Martin H. Skjelvareid"},
+]
+maintainers = [
+  {name = "Martin H. Skjelvareid"}
+]
+description = "Synaptus is a Python/Matlab/Octave toolbox for synthetic aperture or array imaging. The toolbox focuses on Fourier domain algorithms and multilayered structures. It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar)."
+readme = "README.md"
+license = {file = "LICENSE.md"}
+keywords = ["synthetic aperture", "ultrasound", "imaging", "fourier", "multilayer ultrasound imaging"]
+classifiers = [
+  "Programming Language :: Python",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Image Processing",
+  "Topic :: Scientific/Engineering :: Physics"
+]
+
+[project.optional-dependencies]
+dev = [
+  "jupyterlab",
+  "pytest",
+  "ruff",
+  "numpydoc-linter",
+]
+
+[project.urls]
+repository = "https://github.com/mh-skjelvareid/synaptus"
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "I"]
+
+[tool.ruff.format]
+docstring-code-format = true
+docstring-code-line-length = 88
