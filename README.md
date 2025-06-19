@@ -65,6 +65,7 @@ The CPSM algorithm is an adaptation of the PSM algorithm to a cylindrical imagin
 ## Assets common to both Python and Matlab versions
 - `datasets` contains datasets in .mat-format, used for test/demonstration of the algorithms
 - `docs` contains background information not specific to the programming language (PhD thesis ++)
+- `paper` contains files realted to [paper published in Journal of Open Source Software](https://doi.org/10.21105/joss.04185). 
 
 
 ## Python
@@ -76,10 +77,10 @@ The Python version of the toolbox is placed in the `python` folder and contains
 
 ## Matlab / Octave
 The Matlab version of the toolbox is placed in the `matlab` folder and contains:
-- 'core' contains the functions for synthetic aperture focusing. Each file represents a separate algorithm.
-- 'test' contains test scripts for the algorithms
-- 'misc' contains various functions used to help in processing and plotting of results.
-- 'learn' contains simplified versions of (some of) the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
+- `core` contains the functions for synthetic aperture focusing. Each file represents a separate algorithm.
+- `test` contains test scripts for the algorithms
+- `misc` contains various functions used to help in processing and plotting of results.
+- `learn` contains simplified versions of (some of) the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
 
 
 # Requirements
