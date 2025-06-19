@@ -21,8 +21,8 @@ maintainers = [
   {name = "Martin H. Skjelvareid"}
 ]
 description = "Synaptus is a Python/Matlab/Octave toolbox for synthetic aperture or array imaging. The toolbox focuses on Fourier domain algorithms and multilayered structures. It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar)."
-readme = "README.md"
-license = {file = "LICENSE.md"}
+readme = "../README.md"
+license = {file = "../LICENSE.md"}
 keywords = ["synthetic aperture", "ultrasound", "imaging", "fourier", "multilayer ultrasound imaging"]
 classifiers = [
   "Programming Language :: Python",
