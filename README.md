@@ -70,7 +70,7 @@ The CPSM algorithm is an adaptation of the PSM algorithm to a cylindrical imagin
 
 ## Python
 The Python version of the toolbox is placed in the `python` folder and contains
-- `core` contains the Python modules for synthetic aperture focusing
+- `synaptus` contains the Python module(s) for synthetic aperture focusing
 - `learn` contains Jupyter notebooks demonstrating simplified versions of some of the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
 - `test` contains test code (pytest)
 - `docs` contains files related to documentation of the Python version (MkDocs).
