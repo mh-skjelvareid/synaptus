@@ -7,6 +7,8 @@ name = "synaptus"
 version = "0.2.0"
 dependencies = [
   "ipykernel",
+  "jupyterlab",
+  "notebook",
   "matplotlib",
   "numpy",
   "scipy",
@@ -31,7 +33,6 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = [
-  "jupyterlab",
   "pytest",
   "ruff",
   "numpydoc-linter",
