@@ -5,8 +5,9 @@
 **Available through Mathworks File Exchange:** [![View mh-skjelvareid/synaptus on File Exchange](https://www.mathworks.com/matlabcentral/images/matlab-file-exchange.svg)](https://se.mathworks.com/matlabcentral/fileexchange/54792-mh-skjelvareid-synaptus)
 
 
+
 # Summary
-Synaptus is a Matlab/Octave toolbox for synthetic aperture or array imaging. It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar). The toolbox focuses on algorithms implemented in the Fourier domain, and on imaging in multilayered structures (e.g. water, metal, rock).
+Synaptus is a Python and Matlab/Octave toolbox for synthetic aperture or array imaging (**NOTE: The Python version of Synaptus is work in progress**). It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar). The toolbox focuses on algorithms implemented in the Fourier domain, and on imaging in multilayered structures (e.g. water, metal, rock).
 
 The core functionality of the toolbox is to create focused images from raw (unfocused) pulse-echo data. Such data is produced by a transducer that transmits waves into a propagating medium, and records backscattered waves from within the medium. A backscattered "echo" is created when the waves interact with an object or layer with different physical properties than the propagating medium, e.g. a metal object in water. A measurement at a single point in space thus produces a 1-dimensional "depth profile". By moving the transducer laterally relative to the object under study, it is possible to create a 2- or 3-dimensional image of the object. A similar measurement can be performed using an array of multiple transducers. Due to the divergence of the transducer beams, the echoes from scattering objects are "smeared" laterally, making the images unfocused and hard to interpret. Examples of such images are given in the "Example raw and focused images" section below.
 
@@ -60,24 +61,41 @@ The CPSM algorithm is an adaptation of the PSM algorithm to a cylindrical imagin
 
 
 # Organization
-The toolbox is organized into the following folders:
+
+## Assets common to both Python and Matlab versions
+- `datasets` contains datasets in .mat-format, used for test/demonstration of the algorithms
+- `docs` contains background information not specific to the programming language (PhD thesis ++)
+
+
+## Python
+The Python version of the toolbox is placed in the `python` folder and contains
+- `core` contains the Python modules for synthetic aperture focusing
+- `learn` contains Jupyter notebooks demonstrating simplified versions of some of the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
+- `test` contains test code (pytest)
+- `docs` contains files related to documentation of the Python version (MkDocs).
+
+## Matlab / Octave
+The Matlab version of the toolbox is placed in the `matlab` folder and contains:
 - 'core' contains the functions for synthetic aperture focusing. Each file represents a separate algorithm.
-- 'datasets' contains datasets in .mat-format, used for test/demonstration of the algorithms
 - 'test' contains test scripts for the algorithms
-- 'misc' contains various function used to help in processing and plotting of results.
+- 'misc' contains various functions used to help in processing and plotting of results.
 - 'learn' contains simplified versions of (some of) the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
-- 'docs' contains relevant documentation (PhD thesis ++)
-- 'experimental' contains "draft" code related to smaller concepts and ideas, including tilt compensation. The code is not fully polished/commented.
+
 
 # Requirements
-The toolbox requires a working base installation of Matlab or Octave, with some additional signal processing functions. Details for Matlab and Octave are given below.
 
-## Matlab
+## Python
+The Python version of `synaptus` depends on NumPy, SciPy, MatPlotLib, and Jupyter notebooks. See `pyproject.toml` for details.   
+
+## Matlab / Octave
+Using the Matlab/Octave part of `synaptus` requires a working base installation of Matlab or Octave, with some additional signal processing functions. Details for Matlab and Octave are given below.
+
+### Matlab
 Matlab is available for Linux, MacOS and Windows, and can be purchased from [Mathworks](https://mathworks.com/store/). Running Synaptus on Matlab requires:
 - Base installation of Matlab (has been tested with version 2021a, installed on Windows)
 - [Signal processing toolbox](https://se.mathworks.com/products/signal.html) (has been tested with version 8.6)
 
-## Octave
+### Octave
 GNU Octave is free and open source, and is available for both Linux, MacOS and Windows. See [GNU download and installation page](https://www.gnu.org/software/octave/download) for details.
 
 Running Synaptus on Octave requires:
@@ -86,9 +104,26 @@ Running Synaptus on Octave requires:
 
 
 # Installation
+
+## Python
+Download the code from the [synaptus repository](https://github.com/mh-skjelvareid/synaptus), navigate to `<synaptus_root_folder>/python`, create a [virtual environment](https://realpython.com/python-virtual-environments-a-primer/) for synaptus (optional but recommended), activate the virtual environment, and install Synaptus via pip:
+
+    pip install .
+
+If you want an ["editable"](https://setuptools.pypa.io/en/latest/userguide/development_mode.html) installation, use
+
+    pip install -e .
+
+
+## Matlab / Octave
 Download the toolbox and add (at least) the "core" folder to the Matlab / Octave path. Run the scripts found under "test" to see example usage of the different algorithms. To run all the tests one after another, use the script "tests_runAll.m". Open and run the scripts under "learn" to see simplified versions of some of the algorithms, with plots.
 
 # Documentation
+
+## Python
+*To be written*
+
+## Matlab / Octave
 The core algorithms are documented by function descriptions in the standard Matlab/Octave style. Use the `help` command to display documentation for a given function, e.g. `help psm`. The PhD thesis in the "docs" folder describes the theory behind the core algorithms.
 
 The scripts in the "test" folder are meant to test the toolbox functionality, but also serve as an illustration of typical use of the toolbox on some example datasets.
