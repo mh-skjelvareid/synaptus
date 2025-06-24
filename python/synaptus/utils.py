@@ -221,3 +221,45 @@ def make_coord_grids(*args) -> list[NDArray]:
     numpy.meshgrid
     """
     return np.meshgrid(*args, indexing="ij")
+
+
+def make_kz_grid(
+    wave_velocity: float, omega_grid: NDArray, *k_grids: NDArray
+) -> tuple[NDArray, NDArray]:
+    """Calculate wavenumber kz for every combination of omega and kx
+
+    Parameters
+    ----------
+    wave_velocity : float
+        Wave velocity of medium in m/s.
+    omega_grid : NDArray
+        _description_
+    k_grids : list[NDArray]
+        List of 1 or 2 arrays containing kx and ky values.
+        If only one array is provided, it is assumed to be kx.
+        If two arrays are provided, they are assumed to be kx and ky.
+
+    Returns
+    -------
+    tuple[NDArray, NDArray]
+        Grid of kz values and boolean array indicating real wave index.
+
+    Raises
+    ------
+    ValueError
+        If k_grids contains more than 2 elements, or if it is empty.
+    """
+
+    n_k_grids = len(k_grids)
+    if n_k_grids == 1:
+        kx_grid = k_grids[0]
+        kz_grid_sq = ((2 / wave_velocity) ** 2) * (omega_grid**2) - kx_grid**2
+    elif n_k_grids == 2:
+        kx_grid, ky_grid = k_grids
+        kz_grid_sq = ((2 / wave_velocity) ** 2) * (omega_grid**2) - kx_grid**2 - ky_grid**2
+    else:
+        raise ValueError("k_grids must contain 1 element (kx) or 2 elements (kx, ky)")
+
+    real_wave_index = kz_grid_sq >= 0
+    KZ = np.sqrt(kz_grid_sq * real_wave_index)
+    return KZ, real_wave_index
