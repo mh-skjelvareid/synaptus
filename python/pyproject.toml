@@ -12,6 +12,7 @@ dependencies = [
   "matplotlib",
   "numpy",
   "scipy",
+  "rich"
 ]
 requires-python = ">=3.9"
 authors = [
