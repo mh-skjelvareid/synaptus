@@ -2,11 +2,13 @@ from pathlib import Path
 
 import numpy as np
 from numpy.typing import NDArray
+from rich import print
+from scipy.io import loadmat
 from utils import (
-    calc_depth_resolution,
     calc_omega_passband,
     make_coord_grids,
     make_k_vec,
+    make_kz_grid,
     make_omega_vec,
     nextpow2,
 )
@@ -24,7 +26,7 @@ class MultilayerCartesianPulseEchoData:
         x_step: float,
         y_step: float | None = None,
         t_delay: float = 0.0,
-        sound_velocities: tuple[float] = (1500,),
+        wave_velocities: tuple[float] = (1500,),
         layer_thicknesses: tuple[float] | None = None,
         nfft_t: int | None = None,
         nfft_x: int | None = None,
@@ -35,11 +37,11 @@ class MultilayerCartesianPulseEchoData:
         Parameters
         ----------
         raw_data : NDArray
-            2D or 3D array containing ultrasound data,
+            2D or 3D array containing pulse-echo data,
             The first dimension corresponds to time, the second to spatial dimension x,
             and the third to spatial dimension y (if present).
         fs : float
-            Sampling frequency of the ultrasound data in Hz.
+            Sampling frequency of the data (in time domain) in Hz.
         f_low : float
             Low frequency cutoff for the transducer band in Hz.
         f_high : float
@@ -52,17 +54,16 @@ class MultilayerCartesianPulseEchoData:
         t_delay : float, optional
             Time delay from pulse transmission to start of data acquisition, in seconds.
             By default 0.0
-        sound_velocities : tuple[float], optional
-            Sound velocities in the medium(s) through which the ultrasound travels, in
+        wave_velocities : tuple[float], optional
+            Wave velocities in the medium(s) through which the wave travels, in
             meters per second. If only one value is provided, it is assumed that the
-            sound velocity is constant throughout the medium. If not specified, a
+            wave velocity is constant throughout the medium. If not specified, a
             default value of 1500 m/s is used, which is typical for water/soft tissue.
         layer_thicknesses : tuple[float] | None, optional
-            Thicknesses of layers through which the ultrasound
-            travels, in meters. If not specified, it is assumed that there is only one
-            layer, and the thickness is estimated the raw data. If multiple layers are
-            specified, the number of layer thicknesses must match the number of
-            sound velocities.
+            Thicknesses of layers through which the wave travels, in meters. If not
+            specified, it is assumed that there is only one layer, and the thickness is
+            estimated the raw data. If multiple layers are specified, the number of
+            layer thicknesses must match the number of wave velocities.
         nfft_t : int | None, optional
             Number of points for FFT in time dimension. If None, set to the next power of 2
             greater than the number of time samples in the raw data.
@@ -99,17 +100,22 @@ class MultilayerCartesianPulseEchoData:
         if self.ndim == 3 and y_step is None:
             raise ValueError("y_step must be specified for 3D data.")
 
+        # Make time-space coordinate vectors
+        self.time_vec = np.arange(self.nt) / self.fs + self.t_delay
+        self.x_vec = np.arange(self.nx) * self.x_step
+        self.y_vec = np.arange(self.ny) * self.y_step if self.ndim == 3 else np.empty(0)  # type:ignore
+
         # Medium properties
-        self.sound_velocities = sound_velocities
+        self.wave_velocities = wave_velocities
         self.layer_thicknesses = layer_thicknesses
-        if (len(sound_velocities) > 1) and (len(sound_velocities)) != len(layer_thicknesses):
+        if (len(wave_velocities) > 1) and (len(wave_velocities)) != len(layer_thicknesses):
             raise ValueError(
-                "If multiple sound velocities are provided, "
+                "If multiple wave velocities are provided, "
                 "the number of layer thicknesses must match."
             )
         if layer_thicknesses is None:
             layer_thicknesses = (
-                self.time_vec[-1] * (self.sound_velocities[0] / 2),
+                self.time_vec[-1] * (self.wave_velocities[0] / 2),
             )  # Layer thickness for single layer = end of measurement
 
         ## FFT settings
@@ -118,12 +124,7 @@ class MultilayerCartesianPulseEchoData:
         if self.ndim == 3:
             self.nfft_y = nfft_y if nfft_y is not None else nextpow2(self.ny)  # type:ignore
         else:
-            self.nfft_y = None
-
-        # Make time-space coordinate vectors
-        self.time_vec = np.arange(self.nt) / self.fs + self.t_delay
-        self.x_vec = np.arange(self.nx) * self.x_step
-        self.y_vec = np.arange(self.ny) * self.y_step if self.ndim == 3 else np.empty(0)  # type:ignore
+            self.nfft_y = -1  # Placeholder value
 
         # Make frequency domain coordinate vectors
         self.omega_vec_full = make_omega_vec(self.nfft_t, self.fs)
@@ -139,3 +140,77 @@ class MultilayerCartesianPulseEchoData:
             self.ky_grid = np.empty(0)  # Placeholder
         else:
             self.omega_grid, self.kx_grid, self.ky_grid = make_coord_grids(self.x_vec, self.y_vec)
+
+        # Perform Fourier transform on the raw data
+        self.wavefield = self._fourier_transform()
+
+    def _fourier_transform(self) -> NDArray:
+        """Perform Fourier transform on the raw data."""
+        if self.ndim == 2:
+            wavefield = np.fft.fftshift(np.fft.fftn(self.raw_data, s=(self.nfft_t, self.nfft_x)))
+        else:
+            wavefield = np.fft.fftshift(
+                np.fft.fftn(self.raw_data, s=(self.nfft_t, self.nfft_x, self.nfft_y))
+            )
+        return wavefield[self.omega_passband]  # Crop to pos. omega in transducer passband
+
+    def _inverse_fourier_transform(self, wavefield: NDArray) -> NDArray:
+        """Perform inverse Fourier transform on a frequency-domain wavefield."""
+        if self.ndim == 2:  # 2D
+            return np.fft.ifftn(np.fft.ifftshift(wavefield, axes=(1,)))
+        else:  # 3D
+            return np.fft.ifftn(np.fft.ifftshift(wavefield, axes=(1, 2)))
+
+    def _time_shift_to_t_zero(self, wavefield: NDArray) -> NDArray:
+        """Apply negative time shift (as phase shift) to align the wavefield to t=0."""
+        return wavefield * np.exp(-1j * self.omega_grid * self.t_delay)
+
+    def z_shift_wavefield(self, wavefield: NDArray, wave_velocity: float, dz: float):
+        """Apply a phase shift to the wavefield to account for a depth shift.
+
+        Parameters
+        ----------
+        wavefield : NDArray
+            Wavefield in the frequency domain.
+        wave_velocity : float
+            Wave velocity in the medium (in m/s).
+        dz : float
+            Depth shift to apply (in meters).
+
+        Returns
+        -------
+        NDArray
+            Wavefield with the applied depth shift.
+        """
+        # Calculate the kz grid based on the wave velocity and the frequency-domain grids
+        if self.ndim == 2:
+            kz_grid, real_wave_index = make_kz_grid(wave_velocity, self.omega_grid, self.kx_grid)
+        else:
+            kz_grid, real_wave_index = make_kz_grid(
+                wave_velocity, self.omega_grid, self.kx_grid, self.ky_grid
+            )
+        return wavefield * np.exp(1j * kz_grid * dz) * real_wave_index
+
+
+if __name__ == "__main__":
+    example_data_path = Path().resolve().parent.parent / "datasets" / "LineScan2D_WireTargets.mat"
+    example_data = loadmat(example_data_path)
+    raw_data = example_data["ptx"]  # 2D ultrasound data p(t,x)
+    fs = example_data["fs"].item()  # Sampling frequency
+    x_step = example_data["xStep"].item()  # Spatial step size (x-axis)
+    sound_vel = example_data["cc"].item()  # Sound velocity
+    t_delay = example_data["tDelay"].item()  # Pulse recording delay
+
+    f_low = 0.4e6  # Lower cutoff freq., transducer band
+    f_high = 2.5e6  # Upper cutoff freq., transducer band
+
+    dataset = MultilayerCartesianPulseEchoData(
+        raw_data=raw_data,
+        fs=fs,
+        f_low=f_low,
+        f_high=f_high,
+        x_step=x_step,
+        t_delay=t_delay,
+        wave_velocities=(sound_vel,),
+    )
+    print(vars(dataset))
