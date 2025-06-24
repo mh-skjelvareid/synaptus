@@ -120,3 +120,104 @@ def plot_us_image(
 
     # Show plot
     plt.show()
+
+
+def make_omega_vec(n_fft: int, fs: float) -> NDArray:
+    """Make vector of omega values corresponding to FFT bins.
+
+    Parameters
+    ----------
+    n_fft : int
+        Number of points in FFT
+    fs : float
+        Sampling frequency in Hz
+
+    Returns
+    -------
+    NDArray
+        Vector of omega (angular frequency) values.
+    """
+    return np.fft.fftshift(np.fft.fftfreq(n_fft, 1 / fs)) * (2 * np.pi)
+
+
+def make_k_vec(n_fft: int, step: float) -> NDArray:
+    """Make vector of k values corresponding to FFT bins.
+
+    Parameters
+    ----------
+    n_fft : int
+        Number of points in FFT
+    step : float
+        Spatial step size (in meters) corresponding to FFT bins
+
+    Returns
+    -------
+    NDArray
+        Vector of k (spatial frequency) values.
+    """
+    return np.fft.fftshift(np.fft.fftfreq(n_fft, step)) * (2 * np.pi)
+
+
+def calc_omega_passband(omega: NDArray, f_low, f_high) -> NDArray:
+    """Calculate passband of omega values based on frequency limits.
+
+    Parameters
+    ----------
+    omega : NDArray
+        Vector of omega values.
+    f_low : float
+        Lower frequency limit in Hz.
+    f_high : float
+        Upper frequency limit in Hz.
+
+    Returns
+    -------
+    NDArray
+        Vector of boolean values indicating passband.
+
+    """
+    return (omega >= (2 * np.pi * f_low)) & (omega <= (2 * np.pi * f_high))
+
+
+def calc_depth_resolution(wave_velocity: float, f_low: float, f_high: float) -> float:
+    """Calculate depth resolution based on wave velocity and transducer bandwidth.
+
+    Parameters
+    ----------
+    wave_velocity : float
+        Wave velocity in the medium (in m/s).
+    f_low : float
+        Lower frequency limit of the transducer (in Hz).
+    f_high : float
+        Upper frequency limit of the transducer (in Hz).
+
+    Returns
+    -------
+    float
+        Depth resolution (in meters).
+    """
+    return (wave_velocity / 2) / (f_high - f_low)
+
+
+def make_coord_grids(*args) -> list[NDArray]:
+    """Make coordinate grids based on coordinate vectors
+
+    Wrapper for numpy.meshgrid using `indexing='ij'` to ensure
+    that the first dimension corresponds to the first coordinate vector.
+
+    Parameters
+    ----------
+    *args : tuple
+        Coordinate vectors for each dimension, e.g. (omega_vec, kx_vec) for 2D data
+
+    Returns
+    -------
+    list[NDArray]
+        Tuple containing grids for each dimension, e.g. 2D matrices omega_mat and kx_mat
+        for the 2D case of (omega,kx) coordinates.
+
+    See also:
+    --------
+    numpy.meshgrid
+    """
+    return np.meshgrid(*args, indexing="ij")
