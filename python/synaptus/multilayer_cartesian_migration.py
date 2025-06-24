@@ -2,10 +2,17 @@ from pathlib import Path
 
 import numpy as np
 from numpy.typing import NDArray
-from utils import nextpow2
+from utils import (
+    calc_depth_resolution,
+    calc_omega_passband,
+    make_coord_grids,
+    make_k_vec,
+    make_omega_vec,
+    nextpow2,
+)
 
 
-class PhaseShiftMigration:
+class MultilayerCartesianPulseEchoData:
     """Class for performing phase shift migration on pulse-echo data."""
 
     def __init__(
@@ -100,6 +107,10 @@ class PhaseShiftMigration:
                 "If multiple sound velocities are provided, "
                 "the number of layer thicknesses must match."
             )
+        if layer_thicknesses is None:
+            layer_thicknesses = (
+                self.time_vec[-1] * (self.sound_velocities[0] / 2),
+            )  # Layer thickness for single layer = end of measurement
 
         ## FFT settings
         self.nfft_t = nfft_t if nfft_t is not None else nextpow2(self.nt)
@@ -109,6 +120,22 @@ class PhaseShiftMigration:
         else:
             self.nfft_y = None
 
-    def migrate(self) -> NDArray:
-        """Perform phase shift migration on the ultrasound data."""
-        pass
+        # Make time-space coordinate vectors
+        self.time_vec = np.arange(self.nt) / self.fs + self.t_delay
+        self.x_vec = np.arange(self.nx) * self.x_step
+        self.y_vec = np.arange(self.ny) * self.y_step if self.ndim == 3 else np.empty(0)  # type:ignore
+
+        # Make frequency domain coordinate vectors
+        self.omega_vec_full = make_omega_vec(self.nfft_t, self.fs)
+        self.omega_passband = calc_omega_passband(self.omega_vec_full, self.f_low, self.f_high)
+        self.omega_vec = self.omega_vec_full[self.omega_passband]
+        self.omega_vec_full = make_omega_vec(self.nfft_t, self.fs)
+        self.kx_vec = make_k_vec(self.nfft_x, self.x_step)
+        self.ky_vec = make_k_vec(self.nfft_y, self.y_step) if self.ndim == 3 else np.empty(0)  # type:ignore
+
+        # Make frequency-domain coordinate grids
+        if self.ndim == 2:
+            self.omega_grid, self.kx_grid = make_coord_grids(self.x_vec, self.y_vec)
+            self.ky_grid = np.empty(0)  # Placeholder
+        else:
+            self.omega_grid, self.kx_grid, self.ky_grid = make_coord_grids(self.x_vec, self.y_vec)
