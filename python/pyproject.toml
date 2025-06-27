@@ -12,7 +12,8 @@ dependencies = [
   "matplotlib",
   "numpy",
   "scipy",
-  "rich"
+  "rich",
+  "docstring_inheritance"
 ]
 requires-python = ">=3.9"
 authors = [

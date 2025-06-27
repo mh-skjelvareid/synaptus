@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import numpy as np
+from docstring_inheritance import NumpyDocstringInheritanceMeta
 from numpy.typing import NDArray
 from rich import print
 from scipy.io import loadmat
@@ -14,7 +15,7 @@ from utils import (
 )
 
 
-class MultilayerCartesianPulseEchoData:
+class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
     """Class for performing phase shift migration on pulse-echo data."""
 
     def __init__(
@@ -190,6 +191,14 @@ class MultilayerCartesianPulseEchoData:
                 wave_velocity, self.omega_grid, self.kx_grid, self.ky_grid
             )
         return wavefield * np.exp(1j * kz_grid * dz) * real_wave_index
+
+
+class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
+    """Class for performing phase shift migration on pulse-echo data."""
+
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize the PhaseShiftMigration class."""
+        super().__init__(*args, **kwargs)
 
 
 if __name__ == "__main__":
