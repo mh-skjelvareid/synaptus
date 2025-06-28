@@ -6,6 +6,7 @@ from numpy.typing import NDArray
 from rich import print
 from scipy.io import loadmat
 from utils import (
+    calc_depth_resolution,
     calc_omega_passband,
     make_coord_grids,
     make_k_vec,
@@ -142,8 +143,8 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
         else:
             self.omega_grid, self.kx_grid, self.ky_grid = make_coord_grids(self.x_vec, self.y_vec)
 
-        # Perform Fourier transform on the raw data
-        self.wavefield = self._fourier_transform()
+        # Perform Fourier transform on the raw data, and phase shift to t=0
+        self.wavefield = self._time_shift_to_t_zero(self._fourier_transform())
 
     def _fourier_transform(self) -> NDArray:
         """Perform Fourier transform on the raw data."""
@@ -199,6 +200,58 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
     def __init__(self, *args, **kwargs) -> None:
         """Initialize the PhaseShiftMigration class."""
         super().__init__(*args, **kwargs)
+
+    def calc_phase_shift_tensor(self, wave_velocity: float) -> tuple[NDArray, NDArray]:
+        # Make kz grid
+        if self.ndim == 2:
+            kz_grid, real_wave_index = make_kz_grid(wave_velocity, self.omega_grid, self.kx_grid)
+        else:
+            kz_grid, real_wave_index = make_kz_grid(
+                wave_velocity, self.omega_grid, self.kx_grid, self.ky_grid
+            )
+
+        # Calculate depth resolution
+        dz = calc_depth_resolution(wave_velocity, self.f_low, self.f_high)
+
+        return np.exp(1j * kz_grid * dz), real_wave_index
+
+    def phase_shift_migrate(self) -> list[NDArray]:
+        """Perform phase shift migration on the wavefield."""
+        wavefield = self.wavefield.copy()
+        images = []
+
+        for wave_velocity, layer_thickness in zip(self.wave_velocities, self.layer_thicknesses):
+            # Get reolution and number of depth samples in current layer
+            dz = calc_depth_resolution(wave_velocity, self.f_low, self.f_high)
+            n_depth_samples = int(layer_thickness / dz)
+            layer_z_vec = np.arange(n_depth_samples) * dz
+
+            # Preallocate array for fucused image in this layer
+            layer_image = np.zeros(
+                shape=(n_depth_samples,) + wavefield.shape[1:], dtype=np.complex128
+            )
+
+            # Calculate phase shift tensor for this wave velocity
+            phase_shift_tensor, real_wave_index = self.calc_phase_shift_tensor(wave_velocity)
+            wavefield *= real_wave_index  # Apply real wave index to remove non-physical components
+
+            # Phase shift line by line
+            for line_ind in range(n_depth_samples):
+                layer_image[line_ind] = np.fft.ifft(
+                    np.sum(wavefield, axis=0, keepdims=True), axis=1
+                )
+                wavefield *= phase_shift_tensor
+
+            # TODO: Fix potential round-off error at layer interface(?)
+
+            # Save image for this layer (absolute value, without zero-padding)
+            if self.ndim == 2:
+                layer_image = np.abs(layer_image[:, : self.nx])
+            else:
+                layer_image = np.abs(layer_image[:, : self.nx, : self.ny])
+            images.append(layer_image)
+
+        return images
 
 
 if __name__ == "__main__":
