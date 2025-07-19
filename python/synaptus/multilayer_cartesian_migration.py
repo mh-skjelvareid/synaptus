@@ -254,6 +254,16 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
         return images
 
 
+class StoltMigration(MultilayerCartesianPulseEchoData):
+    def __init__(self, *args, **kwargs) -> None:
+        """Initialize the StoltMigration class."""
+        super().__init__(*args, **kwargs)
+
+    def stolt_migrate(self) -> list[NDArray]:
+        """Perform Stolt migration on the wavefield."""
+        pass
+
+
 if __name__ == "__main__":
     example_data_path = Path().resolve().parent.parent / "datasets" / "LineScan2D_WireTargets.mat"
     example_data = loadmat(example_data_path)
