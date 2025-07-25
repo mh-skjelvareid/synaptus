@@ -14,6 +14,7 @@ from utils import (
     make_kz_grid,
     make_omega_vec,
     nextpow2,
+    plot_us_image,
 )
 
 
@@ -34,6 +35,7 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
         nfft_t: int | None = None,
         nfft_x: int | None = None,
         nfft_y: int | None = None,
+        omega_upsampling_factor: int = 1,
     ) -> None:
         """_summary_
 
@@ -76,6 +78,11 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
         nfft_y : int | None, optional
             Number of points for FFT in y dimension. If None, set to the next power of 2
             greater than the number of spatial samples in the y dimension.
+        omega_upsampling_factor : int, optional
+            Factor by which to upsample the omega vector. This is useful for improving
+            the resolution of the frequency-domain representation. Default is 1 (no
+            upsampling). Ignored if nfft_t is specified.
+
 
         Notes
         -----
@@ -110,7 +117,6 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
 
         # Medium properties
         self.wave_velocities = wave_velocities
-        self.layer_thicknesses = layer_thicknesses
         if (len(wave_velocities) > 1) and (len(wave_velocities)) != len(layer_thicknesses):
             raise ValueError(
                 "If multiple wave velocities are provided, "
@@ -120,9 +126,10 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
             layer_thicknesses = (
                 self.time_vec[-1] * (self.wave_velocities[0] / 2),
             )  # Layer thickness for single layer = end of measurement
+        self.layer_thicknesses = layer_thicknesses
 
         ## FFT settings
-        self.nfft_t = nfft_t if nfft_t is not None else nextpow2(self.nt)
+        self.nfft_t = nfft_t if nfft_t is not None else nextpow2(self.nt) * omega_upsampling_factor
         self.nfft_x = nfft_x if nfft_x is not None else nextpow2(self.nx)
         if self.ndim == 3:
             self.nfft_y = nfft_y if nfft_y is not None else nextpow2(self.ny)  # type:ignore
@@ -139,10 +146,12 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
 
         # Make frequency-domain coordinate grids
         if self.ndim == 2:
-            self.omega_grid, self.kx_grid = make_coord_grids(self.x_vec, self.y_vec)
+            self.omega_grid, self.kx_grid = make_coord_grids(self.omega_vec, self.kx_vec)
             self.ky_grid = np.empty(0)  # Placeholder
         else:
-            self.omega_grid, self.kx_grid, self.ky_grid = make_coord_grids(self.x_vec, self.y_vec)
+            self.omega_grid, self.kx_grid, self.ky_grid = make_coord_grids(
+                self.omega_vec, self.kx_vec, self.ky_vec
+            )
 
         # Perform Fourier transform on the raw data, and phase shift to t=0
         self.wavefield = self._time_shift_to_t_zero(self._fourier_transform())
@@ -221,13 +230,13 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
         wavefield = self.wavefield.copy()
         images = []
 
-        for wave_velocity, layer_thickness in zip(self.wave_velocities, self.layer_thicknesses):  # type: ignore
+        for wave_velocity, layer_thickness in zip(self.wave_velocities, self.layer_thicknesses):
             # Get reolution and number of depth samples in current layer
             dz = calc_depth_resolution(wave_velocity, self.f_low, self.f_high)
             n_depth_samples = int(layer_thickness / dz)
             layer_z_vec = np.arange(n_depth_samples) * dz
 
-            # Preallocate array for fucused image in this layer
+            # Preallocate array for focused image in this layer
             layer_image = np.zeros(
                 shape=(n_depth_samples,) + wavefield.shape[1:], dtype=np.complex128
             )
@@ -235,6 +244,8 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
             # Calculate phase shift tensor for this wave velocity
             phase_shift_tensor, real_wave_index = self.calc_phase_shift_tensor(wave_velocity)
             wavefield *= real_wave_index  # Apply real wave index to remove non-physical components
+
+            # TODO: Handle measurement window delay
 
             # Phase shift line by line
             for line_ind in range(n_depth_samples):
@@ -255,11 +266,11 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
         return images
 
 
-class StoltMigration(MultilayerCartesianPulseEchoData):
+class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
     def __init__(self, *args, omega_upsampling_factor=4, **kwargs) -> None:
         """Initialize the StoltMigration class."""
+        kwargs["omega_upsampling_factor"] = omega_upsampling_factor
         super().__init__(*args, **kwargs)
-        self.omega_upsampling_factor = omega_upsampling_factor
 
     def _calc_layer_kz_vector(self, layer_index) -> NDArray:
         relative_bandwidth = (self.f_high - self.f_low) / (self.fs / 2)
@@ -317,9 +328,39 @@ class StoltMigration(MultilayerCartesianPulseEchoData):
             # Interpolate the wavefield to new omega coordinates
             return interpolator((OMEGA_interp, KX_interp, KY_interp)) * Akzkx
 
+    def mulok_migrate(self):
+        # TODO: Upsample only passband in omega direction rather than full wavefield(?)
+        wavefield = self.wavefield.copy()
+        images = []
 
-if __name__ == "__main__":
-    example_data_path = Path().resolve().parent.parent / "datasets" / "LineScan2D_WireTargets.mat"
+        for wave_velocity, layer_index in zip(
+            self.wave_velocities, range(len(self.layer_thicknesses))
+        ):
+            # Focus image for current layer
+            stolt_migrated_wavefield = self._stolt_transform(wavefield, layer_index)
+            if self.ndim == 2:
+                layer_image = np.fft.ifftn(np.fft.ifftshift(stolt_migrated_wavefield, axes=(1,)))
+                layer_image = np.abs(layer_image[:, : self.nx])
+            else:
+                layer_image = np.fft.ifftn(np.fft.ifftshift(stolt_migrated_wavefield, axes=(1, 2)))
+                layer_image = np.abs(layer_image[:, : self.nx, : self.ny])
+            images.append(layer_image)
+
+            # TODO: Handle measurement window delay
+
+            # Migrate wavefield to next layer
+            wavefield = self.z_shift_wavefield(
+                wavefield, wave_velocity, self.layer_thicknesses[layer_index]
+            )
+
+        return images
+
+
+def test_dataset_class():
+    example_data_path = Path(
+        "/home/mha114/Dropbox/Matlab/synaptus_git/synaptus/datasets/LineScan2D_WireTargets.mat"
+    )
+    # example_data_path = Path().resolve().parent.parent / "datasets" / "LineScan2D_WireTargets.mat"
     example_data = loadmat(example_data_path)
     raw_data = example_data["ptx"]  # 2D ultrasound data p(t,x)
     fs = example_data["fs"].item()  # Sampling frequency
@@ -340,3 +381,71 @@ if __name__ == "__main__":
         wave_velocities=(sound_vel,),
     )
     print(vars(dataset))
+
+
+def test_phase_shift_migration():
+    example_data_path = Path(
+        "/home/mha114/Dropbox/Matlab/synaptus_git/synaptus/datasets/LineScan2D_WireTargets.mat"
+    )
+    # example_data_path = Path().resolve().parent.parent / "datasets" / "LineScan2D_WireTargets.mat"
+    print(f"{example_data_path=}")
+    example_data = loadmat(example_data_path)
+    raw_data = example_data["ptx"]  # 2D ultrasound data p(t,x)
+    fs = example_data["fs"].item()  # Sampling frequency
+    x_step = example_data["xStep"].item()  # Spatial step size (x-axis)
+    sound_vel = example_data["cc"].item()  # Sound velocity
+    t_delay = example_data["tDelay"].item()  # Pulse recording delay
+
+    f_low = 0.4e6  # Lower cutoff freq., transducer band
+    f_high = 2.5e6  # Upper cutoff freq., transducer band
+
+    psm = PhaseShiftMigration(
+        raw_data=raw_data,
+        fs=fs,
+        f_low=f_low,
+        f_high=f_high,
+        x_step=x_step,
+        t_delay=t_delay,
+        wave_velocities=(sound_vel,),
+    )
+
+    images = psm.phase_shift_migrate()
+    for image in images:
+        plot_us_image(image)
+
+
+def test_mulok():
+    example_data_path = Path(
+        "/home/mha114/Dropbox/Matlab/synaptus_git/synaptus/datasets/LineScan2D_WireTargets.mat"
+    )
+    # example_data_path = Path().resolve().parent.parent / "datasets" / "LineScan2D_WireTargets.mat"
+    print(f"{example_data_path=}")
+    example_data = loadmat(example_data_path)
+    raw_data = example_data["ptx"]  # 2D ultrasound data p(t,x)
+    fs = example_data["fs"].item()  # Sampling frequency
+    x_step = example_data["xStep"].item()  # Spatial step size (x-axis)
+    sound_vel = example_data["cc"].item()  # Sound velocity
+    t_delay = example_data["tDelay"].item()  # Pulse recording delay
+
+    f_low = 0.4e6  # Lower cutoff freq., transducer band
+    f_high = 2.5e6  # Upper cutoff freq., transducer band
+
+    mulok = MultilayerOmegaKMigration(
+        raw_data=raw_data,
+        fs=fs,
+        f_low=f_low,
+        f_high=f_high,
+        x_step=x_step,
+        t_delay=t_delay,
+        wave_velocities=(sound_vel,),
+    )
+
+    images = mulok.mulok_migrate()
+    for image in images:
+        plot_us_image(image)
+
+
+if __name__ == "__main__":
+    # test_dataset_class()
+    # test_phase_shift_migration()
+    test_mulok()
