@@ -4,6 +4,7 @@ import numpy as np
 from docstring_inheritance import NumpyDocstringInheritanceMeta
 from numpy.typing import NDArray
 from rich import print
+from scipy.interpolate import RegularGridInterpolator
 from scipy.io import loadmat
 from utils import (
     calc_depth_resolution,
@@ -220,7 +221,7 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
         wavefield = self.wavefield.copy()
         images = []
 
-        for wave_velocity, layer_thickness in zip(self.wave_velocities, self.layer_thicknesses):
+        for wave_velocity, layer_thickness in zip(self.wave_velocities, self.layer_thicknesses):  # type: ignore
             # Get reolution and number of depth samples in current layer
             dz = calc_depth_resolution(wave_velocity, self.f_low, self.f_high)
             n_depth_samples = int(layer_thickness / dz)
@@ -255,13 +256,66 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
 
 
 class StoltMigration(MultilayerCartesianPulseEchoData):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self, *args, omega_upsampling_factor=4, **kwargs) -> None:
         """Initialize the StoltMigration class."""
         super().__init__(*args, **kwargs)
+        self.omega_upsampling_factor = omega_upsampling_factor
 
-    def stolt_migrate(self) -> list[NDArray]:
-        """Perform Stolt migration on the wavefield."""
-        pass
+    def _calc_layer_kz_vector(self, layer_index) -> NDArray:
+        relative_bandwidth = (self.f_high - self.f_low) / (self.fs / 2)
+        nfft_z = nextpow2(self.nt * relative_bandwidth)
+        dz = calc_depth_resolution(self.wave_velocities[layer_index], self.f_low, self.f_high)
+        kz_vec = (2 * np.pi) * (
+            2 * self.f_low / self.wave_velocities[layer_index] + np.arange(nfft_z) / (dz * nfft_z)
+        )
+        return kz_vec
+
+    def _stolt_transform(self, wavefield: NDArray, layer_index: int) -> NDArray:
+        """Perform Stolt transform on the wavefield for a given layer."""
+        kz_vec = self._calc_layer_kz_vector(layer_index)
+
+        # Create meshgrid coordinate matrices
+        if self.ndim == 2:
+            KZ_interp, KX_interp = make_coord_grids(kz_vec, self.kx_vec)
+            OMEGA_interp = np.sqrt(KZ_interp**2 + KX_interp**2) * (
+                self.wave_velocities[layer_index] / 2
+            )
+
+            # Calculate amplitude scaling factor
+            Akzkx = 1 / (1 + (KX_interp**2) / (KZ_interp**2))
+
+            # Create interpolator object
+            interpolator = RegularGridInterpolator(
+                points=(self.omega_vec, self.kx_vec),
+                values=wavefield,
+                bounds_error=False,
+                fill_value=0,
+                method="linear",
+            )
+
+            # Interpolate the wavefield to new omega coordinates
+            return interpolator((OMEGA_interp, KX_interp)) * Akzkx
+
+        else:  # ndim == 3
+            KZ_interp, KX_interp, KY_interp = make_coord_grids(kz_vec, self.kx_vec, self.ky_vec)
+            OMEGA_interp = np.sqrt(KZ_interp**2 + KX_interp**2 + KY_interp**2) * (
+                self.wave_velocities[layer_index] / 2
+            )
+
+            # Calculate amplitude scaling factor
+            Akzkx = 1 / (1 + (KX_interp**2 + KY_interp**2) / (KZ_interp**2))
+
+            # Create interpolator object
+            interpolator = RegularGridInterpolator(
+                points=(self.omega_vec, self.kx_vec, self.ky_vec),
+                values=wavefield,
+                bounds_error=False,
+                fill_value=0,
+                method="linear",
+            )
+
+            # Interpolate the wavefield to new omega coordinates
+            return interpolator((OMEGA_interp, KX_interp, KY_interp)) * Akzkx
 
 
 if __name__ == "__main__":
