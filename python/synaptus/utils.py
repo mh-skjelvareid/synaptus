@@ -199,7 +199,7 @@ def calc_depth_resolution(wave_velocity: float, f_low: float, f_high: float) -> 
     return (wave_velocity / 2) / (f_high - f_low)
 
 
-def make_coord_grids(*args) -> list[NDArray]:
+def make_coord_grids(*args) -> tuple[NDArray, ...]:
     """Make coordinate grids based on coordinate vectors
 
     Wrapper for numpy.meshgrid using `indexing='ij'` to ensure
