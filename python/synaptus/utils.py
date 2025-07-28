@@ -88,10 +88,8 @@ def plot_us_image(
         raise ValueError("Image must be a 2D array")
     if axes is None:
         _, axes = plt.subplots(figsize=figsize)
-    if x_val is None:
-        x_val = np.arange(image.shape[1])
-    if y_val is None:
-        y_val = np.arange(image.shape[0])
+    x_val = x_val if x_val is not None else np.arange(image.shape[1])
+    y_val = y_val if y_val is not None else np.arange(image.shape[0])
 
     # Plot image
     im_handle = axes.imshow(
