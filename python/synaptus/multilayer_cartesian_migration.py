@@ -18,7 +18,7 @@ from .utils import (
 
 
 class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
-    """Class for performing phase shift migration on pulse-echo data."""
+    """Dataset class for pulse-echo data in cartesian coordinate system"""
 
     def __init__(
         self,
@@ -170,7 +170,7 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
         return wavefield[self.omega_passband]  # Crop to pos. omega in transducer passband
 
     def _time_shift_to_t_zero(self, wavefield: NDArray) -> NDArray:
-        """Apply negative time shift (as phase shift) to align the wavefield to t=0."""
+        """Apply negative time shift (as phase shift) to align a wavefield to t=0."""
         return wavefield * np.exp(-1j * self.omega_grid * self.t_delay)
 
     def z_shift_wavefield(self, wavefield: NDArray, wave_velocity: float, dz: float):
@@ -208,7 +208,31 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
         super().__init__(*args, **kwargs)
 
     def calc_phase_shift_tensor(self, wave_velocity: float) -> tuple[NDArray, NDArray]:
-        """Calculate the phase shift tensor for a given wave velocity."""
+        """
+        Computes the phase shift tensor for wavefield extrapolation at a specified wave velocity.
+
+        This method constructs the vertical wavenumber (kz) grid based on the spatial and frequency grids,
+        then calculates the phase shift tensor used for propagating wavefields in depth. The depth increment (dz)
+        is determined from the frequency range and wave velocity. The method supports both 2D and 3D grids.
+
+        Parameters
+        ----------
+        wave_velocity : float
+            The propagation velocity of the wave (in meters per second).
+
+        Returns
+        -------
+        phase_shift_tensor : NDArray
+            Complex-valued tensor representing the phase shift for each grid point.
+        real_wave_index : NDArray
+            Boolean or integer array indicating the indices of physically meaningful (real) wavenumbers.
+
+        Notes
+        -----
+        The phase shift tensor is computed as exp(1j * kz * dz), where kz is the vertical wavenumber grid
+        and dz is the depth increment. This is commonly used in wavefield extrapolation methods such as
+        phase-shift migration.
+        """
         # Make kz grid
         if self.ndim == 2:
             kz_grid, real_wave_index = make_kz_grid(wave_velocity, self.omega_grid, self.kx_grid)
@@ -223,6 +247,24 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
         return np.exp(1j * kz_grid * dz), real_wave_index
 
     def phase_shift_migrate(self) -> list[NDArray]:
+        """
+        Perform phase shift migration on the wavefield for each subsurface layer.
+
+        This method applies the phase shift migration algorithm to the current wavefield,
+        propagating it through each defined subsurface layer using the corresponding wave velocity
+        and layer thickness. For each layer, the wavefield is phase-shifted in the frequency domain,
+        and an image is constructed by inverse Fourier transforming the summed wavefield at each depth step.
+
+        Returns:
+            list[NDArray]: A list of 2D or 3D NumPy arrays (depending on self.ndim), where each array
+                represents the migrated image for a corresponding subsurface layer. The images are
+                absolute-valued and cropped to the original spatial dimensions.
+
+        Notes:
+            - The method assumes that self.wavefield, self.wave_velocities, self.layer_thicknesses,
+              self.f_low, self.f_high, self.nx, self.ny, and self.ndim are properly initialized.
+            - Non-physical wave components are suppressed using the real wave index.
+        """
         """Perform phase shift migration on the wavefield."""
         wavefield = self.wavefield.copy()
         images = []
@@ -257,6 +299,11 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
             else:
                 layer_image = np.abs(layer_image[:, : self.nx, : self.ny])
             images.append(layer_image)
+
+            # # Migrate wavefield to next layer
+            # wavefield = self.z_shift_wavefield(
+            #     wavefield, wave_velocity, self.layer_thicknesses[layer_index]
+            # )
 
         return images
 
