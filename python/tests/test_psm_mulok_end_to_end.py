@@ -36,9 +36,9 @@ def test_phase_shift_migration_2d():
         t_delay=mat_dataset.t_delay,
         wave_velocities=mat_dataset.wave_vel,
     )
-    images = psm.phase_shift_migrate()
-    for image in images:
-        plot_us_image(image)
+    images, z_vecs = psm.phase_shift_migrate()
+    for image, z_vec in zip(images, z_vecs):
+        plot_us_image(image, y_val=z_vec)
 
 
 def test_mulok_2d():
@@ -56,6 +56,6 @@ def test_mulok_2d():
         wave_velocities=mat_dataset.wave_vel,
     )
 
-    images = mulok.mulok_migrate()
-    for image in images:
-        plot_us_image(image)
+    images, z_vecs = mulok.mulok_migrate()
+    for image, z_vec in zip(images, z_vecs):
+        plot_us_image(image, y_val=z_vec)

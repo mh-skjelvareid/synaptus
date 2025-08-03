@@ -280,7 +280,7 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
 
         return np.exp(1j * kz_grid * dz), real_wave_index
 
-    def phase_shift_migrate(self) -> list[NDArray]:
+    def phase_shift_migrate(self) -> tuple[list[NDArray], list[np.ndarray]]:
         """
         Perform phase shift migration on the wavefield for each subsurface layer.
 
@@ -305,27 +305,25 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
 
         # Preallocate list for images (one per layer)
         images = []
+        z_vecs = []
 
         for wave_velocity, layer_thickness in zip(self.wave_velocities, self.layer_thicknesses):
             # Create a copy of the interface wavefield (migrated to top of layer) for this layer
             wavefield = interface_wavefield.copy()
 
-            # Get reolution and number of depth samples in current layer
+            # Get resolution and number of depth samples in current layer
             dz = calc_depth_resolution(wave_velocity, self.f_low, self.f_high)
-            n_depth_samples = int(layer_thickness / dz)
-            layer_z_vec = np.arange(n_depth_samples) * dz
+            layer_nz = int(layer_thickness / dz)
 
             # Preallocate array for focused image in this layer
-            layer_image = np.zeros(
-                shape=(n_depth_samples,) + wavefield.shape[1:], dtype=np.complex128
-            )
+            layer_image = np.zeros(shape=(layer_nz,) + wavefield.shape[1:], dtype=np.complex128)
 
             # Calculate phase shift tensor for this wave velocity
             phase_shift_tensor, real_wave_index = self.calc_phase_shift_tensor(wave_velocity)
             wavefield *= real_wave_index  # Apply real wave index to remove non-physical components
 
             # Phase shift line by line
-            for line_ind in range(n_depth_samples):
+            for line_ind in range(layer_nz):
                 layer_image[line_ind] = np.fft.ifft(
                     np.sum(wavefield, axis=0, keepdims=True), axis=1
                 )
@@ -338,12 +336,16 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
                 layer_image = np.abs(layer_image[:, : self.nx, : self.ny])
             images.append(layer_image)
 
+            # Create and save z coordinate vector for this layer
+            layer_z_vec = np.arange(layer_nz) * dz
+            z_vecs.append(layer_z_vec)
+
             # Migrate wavefield to next layer
             interface_wavefield = self.z_shift_wavefield(
                 interface_wavefield, wave_velocity, layer_thickness
             )
 
-        return images
+        return images, z_vecs
 
 
 class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
@@ -438,7 +440,7 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
             # Interpolate the wavefield to new omega coordinates
             return interpolator((OMEGA_interp, KX_interp, KY_interp)) * Akzkx
 
-    def mulok_migrate(self):
+    def mulok_migrate(self) -> tuple[list[NDArray], list[NDArray]]:
         """
         Perform multilayer omega-k (ω-k) migration on the wavefield.
 
@@ -451,15 +453,16 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
           - The wavefield is then propagated (shifted) to the next interface for further migration.
 
         Returns:
-            list of np.ndarray: A list of migrated images, one per layer. Each image is a
-            2D or 3D array (depending on the dimensionality of the input wavefield),
-            representing the focused reflectivity for that layer.
+            tuple[list[NDArray], list[NDArray]]: A tuple containing a list of migrated
+            images (one per layer) and a list of corresponding z coordinate vectors for
+            each layer.
 
         Notes:
             - The migration is performed in the frequency-wavenumber (ω-k) domain.
         """
         interface_wavefield = self.wavefield.copy()
         images = []
+        z_vecs = []
 
         # Iterate over each layer, creating focused images and migrating between layer interfaces
         for wave_velocity, layer_index in zip(
@@ -479,12 +482,16 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
                 layer_image = np.abs(layer_image[:layer_nz, : self.nx, : self.ny])
             images.append(layer_image)
 
+            # Create and save z coordinate vector for this layer
+            layer_z_vec = np.arange(layer_nz) * dz
+            z_vecs.append(layer_z_vec)
+
             # Migrate wavefield to next layer
             interface_wavefield = self.z_shift_wavefield(
                 interface_wavefield, wave_velocity, self.layer_thicknesses[layer_index]
             )
 
-        return images
+        return images, z_vecs
 
 
 if __name__ == "__main__":
