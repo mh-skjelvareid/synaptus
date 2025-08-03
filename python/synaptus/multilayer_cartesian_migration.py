@@ -156,7 +156,23 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
         self.wavefield = self._time_shift_to_t_zero(self._fourier_transform())
 
     def _fourier_transform(self) -> NDArray:
-        """Perform Fourier transform on the raw data."""
+        """
+        Performs an n-dimensional Fourier transform on the raw input data and returns
+        the frequency-domain wavefield cropped to the positive frequency components
+        within the transducer passband.
+
+        Returns:
+            NDArray: The Fourier-transformed wavefield, restricted to the positive
+            frequency passband.
+
+        Notes:
+            - For 2D data, the transform is performed over time and x axes (time, x).
+            - For 3D data, the transform is performed over time, x, and y axes (time, x,
+              y).
+            - Only positive (omega) frequencies within the transducer's passband are
+              returned.
+        """
+
         if self.ndim == 2:
             wavefield = np.fft.fftshift(
                 np.fft.fftn(self.raw_data, s=(self.nfft_t, self.nfft_x), axes=(0, 1))
@@ -170,7 +186,25 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
         return wavefield[self.omega_passband]  # Crop to pos. omega in transducer passband
 
     def _time_shift_to_t_zero(self, wavefield: NDArray) -> NDArray:
-        """Apply negative time shift (as phase shift) to align a wavefield to t=0."""
+        """
+        Apply a negative time shift to the input wavefield to align it with t=0.
+
+        This method multiplies the input wavefield by a complex exponential factor,
+        effectively applying a phase shift in the frequency domain. The phase shift
+        corresponds to a negative time delay (`-self.t_delay`), which aligns the wavefield
+        so that its reference time is zero.
+
+        Parameters
+        ----------
+        wavefield : NDArray
+            The input wavefield array, typically in the frequency domain.
+
+        Returns
+        -------
+        NDArray
+            The time-shifted wavefield, aligned to t=0.
+
+        """
         return wavefield * np.exp(-1j * self.omega_grid * self.t_delay)
 
     def z_shift_wavefield(self, wavefield: NDArray, wave_velocity: float, dz: float):
@@ -265,11 +299,17 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
               self.f_low, self.f_high, self.nx, self.ny, and self.ndim are properly initialized.
             - Non-physical wave components are suppressed using the real wave index.
         """
-        """Perform phase shift migration on the wavefield."""
-        wavefield = self.wavefield.copy()
+
+        # Copy the wavefield to avoid modifying the original data
+        interface_wavefield = self.wavefield.copy()
+
+        # Preallocate list for images (one per layer)
         images = []
 
         for wave_velocity, layer_thickness in zip(self.wave_velocities, self.layer_thicknesses):
+            # Create a copy of the interface wavefield (migrated to top of layer) for this layer
+            wavefield = interface_wavefield.copy()
+
             # Get reolution and number of depth samples in current layer
             dz = calc_depth_resolution(wave_velocity, self.f_low, self.f_high)
             n_depth_samples = int(layer_thickness / dz)
@@ -291,8 +331,6 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
                 )
                 wavefield *= phase_shift_tensor
 
-            # TODO: Fix potential round-off error at layer interface(?)
-
             # Save image for this layer (absolute value, without zero-padding)
             if self.ndim == 2:
                 layer_image = np.abs(layer_image[:, : self.nx])
@@ -300,10 +338,10 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
                 layer_image = np.abs(layer_image[:, : self.nx, : self.ny])
             images.append(layer_image)
 
-            # # Migrate wavefield to next layer
-            # wavefield = self.z_shift_wavefield(
-            #     wavefield, wave_velocity, self.layer_thicknesses[layer_index]
-            # )
+            # Migrate wavefield to next layer
+            interface_wavefield = self.z_shift_wavefield(
+                interface_wavefield, wave_velocity, layer_thickness
+            )
 
         return images
 
@@ -325,7 +363,36 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
         return kz_vec
 
     def _stolt_transform(self, wavefield: NDArray, layer_index: int) -> NDArray:
-        """Perform Stolt transform on the wavefield for a given layer."""
+        """
+        Applies the Stolt migration transform to the input wavefield for a specified
+        layer.
+
+        The Stolt transform is a frequency-wavenumber domain migration technique used in
+        seismic imaging. This method interpolates the input wavefield from (omega, kx[,
+        ky]) coordinates to new (omega, kx[, ky]) coordinates according to the Stolt
+        mapping for the given layer's velocity. It also applies the appropriate
+        amplitude scaling factor.
+
+        Parameters:
+            wavefield (NDArray): The input wavefield in the frequency-wavenumber domain.
+                Shape should match (omega, kx) for 2D or (omega, kx, ky) for 3D.
+            layer_index (int): Index of the layer for which to perform the Stolt
+            transform.
+                Used to select the appropriate velocity and kz vector.
+
+        Returns:
+            NDArray: The Stolt-migrated wavefield, interpolated and amplitude-corrected,
+                with the same shape as the input wavefield.
+
+        Notes:
+            - For 2D data, the transform is performed over (omega, kx).
+            - For 3D data, the transform is performed over (omega, kx, ky).
+            - Uses linear interpolation and zero-filling for out-of-bounds values.
+            - Requires precomputed frequency (omega_vec), wavenumber (kx_vec, [ky_vec]),
+              and velocity arrays.
+        """
+
+        # Calculate the kz vector for the current layer
         kz_vec = self._calc_layer_kz_vector(layer_index)
 
         # Create meshgrid coordinate matrices
@@ -372,10 +439,29 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
             return interpolator((OMEGA_interp, KX_interp, KY_interp)) * Akzkx
 
     def mulok_migrate(self):
-        """Perform multilayer omega-k migration on the wavefield."""
-        wavefield = self.wavefield.copy()
+        """
+        Perform multilayer omega-k (ω-k) migration on the wavefield.
+
+        This method applies Stolt migration sequentially to each subsurface layer,
+        as defined by the provided wave velocities and layer thicknesses. For each layer:
+          - The depth sampling interval (`dz`) is computed based on the local wave velocity
+            and frequency bounds.
+          - The wavefield is migrated using a Stolt transform, and the resulting image for
+            the current layer is extracted.
+          - The wavefield is then propagated (shifted) to the next interface for further migration.
+
+        Returns:
+            list of np.ndarray: A list of migrated images, one per layer. Each image is a
+            2D or 3D array (depending on the dimensionality of the input wavefield),
+            representing the focused reflectivity for that layer.
+
+        Notes:
+            - The migration is performed in the frequency-wavenumber (ω-k) domain.
+        """
+        interface_wavefield = self.wavefield.copy()
         images = []
 
+        # Iterate over each layer, creating focused images and migrating between layer interfaces
         for wave_velocity, layer_index in zip(
             self.wave_velocities, range(len(self.layer_thicknesses))
         ):
@@ -384,7 +470,7 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
             layer_nz = int(self.layer_thicknesses[layer_index] / dz)
 
             # Focus image for current layer
-            stolt_migrated_wavefield = self._stolt_transform(wavefield, layer_index)
+            stolt_migrated_wavefield = self._stolt_transform(interface_wavefield, layer_index)
             if self.ndim == 2:
                 layer_image = np.fft.ifftn(np.fft.ifftshift(stolt_migrated_wavefield, axes=(1,)))
                 layer_image = np.abs(layer_image[:layer_nz, : self.nx])
@@ -394,8 +480,8 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
             images.append(layer_image)
 
             # Migrate wavefield to next layer
-            wavefield = self.z_shift_wavefield(
-                wavefield, wave_velocity, self.layer_thicknesses[layer_index]
+            interface_wavefield = self.z_shift_wavefield(
+                interface_wavefield, wave_velocity, self.layer_thicknesses[layer_index]
             )
 
         return images
