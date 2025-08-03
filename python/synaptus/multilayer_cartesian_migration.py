@@ -5,18 +5,15 @@ from docstring_inheritance import NumpyDocstringInheritanceMeta
 from numpy.typing import NDArray
 from rich import print
 from scipy.interpolate import RegularGridInterpolator
-from scipy.io import loadmat
 
-from synaptus import (
+from .utils import (
     calc_depth_resolution,
     calc_omega_passband,
-    load_mat_dataset,
     make_coord_grids,
     make_k_vec,
     make_kz_grid,
     make_omega_vec,
     nextpow2,
-    plot_us_image,
 )
 
 
@@ -161,10 +158,14 @@ class MultilayerCartesianPulseEchoData(metaclass=NumpyDocstringInheritanceMeta):
     def _fourier_transform(self) -> NDArray:
         """Perform Fourier transform on the raw data."""
         if self.ndim == 2:
-            wavefield = np.fft.fftshift(np.fft.fftn(self.raw_data, s=(self.nfft_t, self.nfft_x)))
+            wavefield = np.fft.fftshift(
+                np.fft.fftn(self.raw_data, s=(self.nfft_t, self.nfft_x), axes=(0, 1))
+            )
         else:
             wavefield = np.fft.fftshift(
-                np.fft.fftn(self.raw_data, s=(self.nfft_t, self.nfft_x, self.nfft_y))
+                np.fft.fftn(
+                    self.raw_data, s=(self.nfft_t, self.nfft_x, self.nfft_y), axes=(0, 1, 2)
+                )
             )
         return wavefield[self.omega_passband]  # Crop to pos. omega in transducer passband
 
@@ -353,61 +354,5 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
         return images
 
 
-def test_dataset_class():
-    mat_dataset = load_mat_dataset("LineScan2D_WireTargets.mat")
-
-    dataset = MultilayerCartesianPulseEchoData(
-        raw_data=mat_dataset.raw_data,
-        fs=mat_dataset.fs,
-        f_low=0.4e6,
-        f_high=2.5e6,
-        x_step=mat_dataset.x_step,  # type:ignore
-        t_delay=mat_dataset.t_delay,
-        wave_velocities=mat_dataset.wave_vel,
-    )
-
-    print(vars(dataset))
-
-
-def test_phase_shift_migration():
-    """Test the PhaseShiftMigration class."""
-    mat_dataset = load_mat_dataset("LineScan2D_WireTargets.mat")
-
-    psm = PhaseShiftMigration(
-        raw_data=mat_dataset.raw_data,
-        fs=mat_dataset.fs,
-        f_low=0.4e6,
-        f_high=2.5e6,
-        x_step=mat_dataset.x_step,  # type:ignore
-        t_delay=mat_dataset.t_delay,
-        wave_velocities=mat_dataset.wave_vel,
-    )
-    images = psm.phase_shift_migrate()
-    for image in images:
-        plot_us_image(image)
-
-
-def test_mulok():
-    """Test the MultilayerOmegaKMigration class."""
-
-    mat_dataset = load_mat_dataset("LineScan2D_WireTargets.mat")
-
-    mulok = MultilayerOmegaKMigration(
-        raw_data=mat_dataset.raw_data,
-        fs=mat_dataset.fs,
-        f_low=0.4e6,
-        f_high=2.5e6,
-        x_step=mat_dataset.x_step,  # type:ignore
-        t_delay=mat_dataset.t_delay,
-        wave_velocities=mat_dataset.wave_vel,
-    )
-
-    images = mulok.mulok_migrate()
-    for image in images:
-        plot_us_image(image)
-
-
 if __name__ == "__main__":
-    # test_dataset_class()
-    # test_phase_shift_migration()
-    test_mulok()
+    pass

@@ -12,7 +12,6 @@ dependencies = [
   "matplotlib",
   "numpy",
   "scipy",
-  "rich",
   "docstring_inheritance"
 ]
 requires-python = ">=3.9"
@@ -35,9 +34,7 @@ classifiers = [
 
 [project.optional-dependencies]
 dev = [
-  "pytest",
-  "ruff",
-  "numpydoc-linter",
+  "pytest>=8.0",
 ]
 
 [project.urls]
