@@ -16,7 +16,7 @@ addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data, extract 2D slice and convert to double precision
 disp('Loading data')
-load(fullfile(toolboxPath,'datasets','CylScan3D_LeadSpheres.mat'),'ptpz','fs','phiStep','zStep',...
+load(fullfile(fileparts(toolboxPath),'datasets','CylScan3D_LeadSpheres.mat'),'ptpz','fs','phiStep','zStep',...
     'tDelay','r0','fLow','fHigh','cc');
 zSliceInd = 30;                         % Index for 2D slice from 3D dataset
 ptp = double(ptpz(:,:,zSliceInd));      % Extract slice, convert to double

@@ -16,7 +16,7 @@ addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
 disp('Loading data');
-load(fullfile(toolboxPath,'datasets','PlaneScan3D_PlexiAluFBH.mat'),...
+load(fullfile(fileparts(toolboxPath),'datasets','PlaneScan3D_PlexiAluFBH.mat'),...
     'fs','ptxy','tDelay','fLow','fHigh','fc','thick','xStep','yStep','cc');
 
 interpol = 'chirpz';    % Stolt interp. method, options 'linear', 'chirpz'

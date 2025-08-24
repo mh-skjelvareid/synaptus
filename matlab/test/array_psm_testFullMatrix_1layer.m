@@ -23,7 +23,7 @@ addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load test data
 disp('Loading data')
-load(fullfile(toolboxPath,'datasets','ArraySteelPins.mat'),'data','MWB')
+load(fullfile(fileparts(toolboxPath),'datasets','ArraySteelPins.mat'),'data','MWB')
 mwb = MWB*1e-6;         % Measurement window begin
 
 %% Parameters

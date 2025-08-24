@@ -16,7 +16,7 @@ addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
 disp('Loading data');
-load(fullfile(toolboxPath,'datasets','LineScan2D_PinsPlexiAluSDH.mat'),...
+load(fullfile(fileparts(toolboxPath),'datasets','LineScan2D_PinsPlexiAluSDH.mat'),...
     'fs','ptx','tDelay','fLow','fHigh','thick','xStep','cc');
 
 %% Parameters

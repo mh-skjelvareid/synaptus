@@ -17,7 +17,7 @@ addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data
 disp('Loading data')
-load(fullfile(toolboxPath,'datasets','CylScan3D_ObjectsInPipe.mat'),'ptpz','fs','phiStep','zStep',...
+load(fullfile(fileparts(toolboxPath),'datasets','CylScan3D_ObjectsInPipe.mat'),'ptpz','fs','phiStep','zStep',...
     'tDelay','r0','fLow','fHigh','cc');
 
 %% Gate out reflection from pipe surface (creates artefacts)

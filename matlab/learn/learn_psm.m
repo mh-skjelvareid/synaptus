@@ -39,7 +39,7 @@ toolboxPath=fileparts(fileparts(mfilename('fullpath'))); %Get the toolbox path
 addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data, extract 2D slice and convert to double precision
-load(fullfile(toolboxPath,'datasets','LineScan2D_WireTargets.mat'), ...
+load(fullfile(fileparts(toolboxPath),'datasets','LineScan2D_WireTargets.mat'), ...
     'ptx',...           % Ultrasound data
     'fs',...            % Sampling frequency
     'xStep',...         % Spatial step size

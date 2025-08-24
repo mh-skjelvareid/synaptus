@@ -16,7 +16,7 @@ addpath(fullfile(toolboxPath,'core'),fullfile(toolboxPath,'misc'));
 
 %% Load data and convert to double precision
 disp('Loading data')
-load(fullfile(toolboxPath,'datasets','CylScan3D_LeadSpheres.mat'),'ptpz','fs','phiStep','zStep',...
+load(fullfile(fileparts(toolboxPath),'datasets','CylScan3D_LeadSpheres.mat'),'ptpz','fs','phiStep','zStep',...
     'tDelay','r0','fLow','fHigh','cc');
 ptpz = double(ptpz);
 
