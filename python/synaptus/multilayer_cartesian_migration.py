@@ -3,7 +3,6 @@ from pathlib import Path
 import numpy as np
 from docstring_inheritance import NumpyDocstringInheritanceMeta
 from numpy.typing import NDArray
-from rich import print
 from scipy.interpolate import RegularGridInterpolator
 
 from .utils import (
