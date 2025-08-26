@@ -35,6 +35,8 @@ classifiers = [
 [project.optional-dependencies]
 dev = [
   "pytest>=8.0",
+]
+docs = [
   "mkdocs",
   "mkdocstrings-python",
   "mkdocs-material"
