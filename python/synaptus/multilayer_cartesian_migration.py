@@ -302,6 +302,9 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
         # Copy the wavefield to avoid modifying the original data
         interface_wavefield = self.wavefield.copy()
 
+        # Create variable for z coordinate of top of current layer
+        layer_top_z = 0.0
+
         # Preallocate list for images (one per layer)
         images = []
         z_vecs = []
@@ -323,8 +326,8 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
 
             # Phase shift line by line
             for line_ind in range(layer_nz):
-                layer_image[line_ind] = np.fft.ifft(
-                    np.sum(wavefield, axis=0, keepdims=True), axis=1
+                layer_image[line_ind] = np.fft.ifftn(
+                    np.fft.ifftshift(np.sum(wavefield, axis=0)),
                 )
                 wavefield *= phase_shift_tensor
 
@@ -336,13 +339,14 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
             images.append(layer_image)
 
             # Create and save z coordinate vector for this layer
-            layer_z_vec = np.arange(layer_nz) * dz
+            layer_z_vec = np.arange(layer_nz) * dz + layer_top_z
             z_vecs.append(layer_z_vec)
 
             # Migrate wavefield to next layer
             interface_wavefield = self.z_shift_wavefield(
                 interface_wavefield, wave_velocity, layer_thickness
             )
+            layer_top_z += layer_thickness
 
         return images, z_vecs
 
