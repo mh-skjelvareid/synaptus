@@ -7,7 +7,7 @@
 
 
 # Summary
-Synaptus is a Python and Matlab/Octave toolbox for synthetic aperture or array imaging (**NOTE: The Python version of Synaptus is work in progress**). It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar). The toolbox focuses on algorithms implemented in the Fourier domain, and on imaging in multilayered structures (e.g. water, metal, rock).
+Synaptus is a Matlab/Octave and Python toolbox for synthetic aperture or array imaging (**NOTE: The Python version of Synaptus is work in progress**). It was originally developed for ultrasonic imaging for non-destructive testing, but can be applied for similar imaging modes (e.g. ground penetrating radar). The toolbox focuses on algorithms implemented in the Fourier domain, and on imaging in multilayered structures (e.g. water, metal, rock).
 
 The core functionality of the toolbox is to create focused images from raw (unfocused) pulse-echo data. Such data is produced by a transducer that transmits waves into a propagating medium, and records backscattered waves from within the medium. A backscattered "echo" is created when the waves interact with an object or layer with different physical properties than the propagating medium, e.g. a metal object in water. A measurement at a single point in space thus produces a 1-dimensional "depth profile". By moving the transducer laterally relative to the object under study, it is possible to create a 2- or 3-dimensional image of the object. A similar measurement can be performed using an array of multiple transducers. Due to the divergence of the transducer beams, the echoes from scattering objects are "smeared" laterally, making the images unfocused and hard to interpret. Examples of such images are given in the "Example raw and focused images" section below.
 
@@ -70,17 +70,19 @@ The CPSM algorithm is an adaptation of the PSM algorithm to a cylindrical imagin
 
 ## Python
 The Python version of the toolbox is placed in the `python` folder and contains
-- `synaptus` contains the Python module(s) for synthetic aperture focusing
-- `learn` contains Jupyter notebooks demonstrating simplified versions of some of the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
-- `test` contains test code (pytest)
 - `docs` contains files related to documentation of the Python version (MkDocs).
+- `examples` contains Jupyter notebooks demonstrating Python classes and functions on
+  eaxmple datasets.
+- `learn` contains Jupyter notebooks demonstrating simplified versions of some of the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
+- `synaptus` contains the Python module(s) for synthetic aperture focusing
+- `test` contains test code (pytest)
 
 ## Matlab / Octave
 The Matlab version of the toolbox is placed in the `matlab` folder and contains:
 - `core` contains the functions for synthetic aperture focusing. Each file represents a separate algorithm.
-- `test` contains test scripts for the algorithms
-- `misc` contains various functions used to help in processing and plotting of results.
 - `learn` contains simplified versions of (some of) the algorithms in the toolbox, with additional plots of data at intermediate steps to help understanding.
+- `misc` contains various functions used to help in processing and plotting of results.
+- `test` contains test scripts for the algorithms
 
 
 # Requirements
@@ -122,7 +124,11 @@ Download the toolbox and add (at least) the "core" folder to the Matlab / Octave
 # Documentation
 
 ## Python
-*To be written*
+Documentation of methods and classes implemented in Python are available at
+[mh-skjelvareid.github.io/synaptus/](https://mh-skjelvareid.github.io/synaptus/). The ["quick
+start"](https://mh-skjelvareid.github.io/synaptus/#quick-start) gives a taste of how
+the Python code has been organized, and how focused images are created from raw data.
+Note that the Python documentation is still quite rudimentary.
 
 ## Matlab / Octave
 The core algorithms are documented by function descriptions in the standard Matlab/Octave style. Use the `help` command to display documentation for a given function, e.g. `help psm`. The PhD thesis in the "docs" folder describes the theory behind the core algorithms.
