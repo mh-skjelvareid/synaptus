@@ -1,4 +1,5 @@
 *.pyc
 /paper
 /python/debug
+/python/site
 uv.lock
