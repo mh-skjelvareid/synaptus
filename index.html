@@ -234,6 +234,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick start
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -297,6 +306,15 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#quick-start" class="md-nav__link">
+    <span class="md-ellipsis">
+      Quick start
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -331,16 +349,112 @@ backscattered "echo" is created when the waves interact with an object or layer 
 different physical properties than the propagating medium, e.g. a metal object in water.
 A measurement at a single point in space thus produces a 1-dimensional "depth profile".
 By moving the transducer laterally relative to the object under study, it is possible to
-create a 2- or 3-dimensional image of the object. A similar measurement can be performed
-using an array of multiple transducers. Due to the divergence of the transducer beams,
-the echoes from scattering objects are "smeared" laterally, making the images unfocused
-and hard to interpret. Examples of such images are given in the "Example raw and focused
-images" section below.</p>
+create a 2- or 3-dimensional image of the object. Due to the divergence of the
+transducer beams, the echoes from scattering objects are "smeared" laterally, making the
+images unfocused and hard to interpret (see example in "quick start" below). </p>
 <p>The algorithms in the Synaptus toolbox take such raw, unfocused images as input and
 processes them to create focused images. Conceptually, this is done by treating the raw
 images as measurements of a wave field, and using the wave equation to manipulate the
 wave field into a focused image. The details of this process is described in the PhD
 thesis included in the toolbox.</p>
+<h2 id="quick-start">Quick start</h2>
+<p>The example code below assumes that the synaptus Python package has been installed. It
+follows the <code>demo_psm_2d.ipynb</code> notebook found under <code>python/examples</code>. </p>
+<p>Import dependencies, the PhaseShiftMigration class, and utility functions for loading
+datasets and plotting 2D ultrasound images:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="kn">from</span><span class="w"> </span><span class="nn">pprint</span><span class="w"> </span><span class="kn">import</span> <span class="n">pprint</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">scipy.signal</span><span class="w"> </span><span class="kn">import</span> <span class="n">hilbert</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">synaptus</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="n">PhaseShiftMigration</span><span class="p">,</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="n">load_mat_dataset</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="n">plot_us_image</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="p">)</span>
+</span></code></pre></div>
+<p>Load an example dataset (included with synaptus):
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="c1"># Load dataset</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="n">mat_dataset</span> <span class="o">=</span> <span class="n">load_mat_dataset</span><span class="p">(</span><span class="s2">&quot;LineScan2D_WireTargets.mat&quot;</span><span class="p">)</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="n">pprint</span><span class="p">(</span><span class="n">mat_dataset</span><span class="p">)</span>
+</span></code></pre></div></p>
+<p>The following dataset properties are printed: </p>
+<div class="language-text no-copy highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>UltrasoundDataset(raw_data=array([[ 9.97680625, 11.89522917, 10.30557292, ..., 10.86622708,
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>        10.70336667, 11.66129167],
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>       [11.13305625, 10.02022917, 10.93057292, ..., 11.69435208,
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>        10.93774167,  9.89566667],
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>       [11.11743125, 11.12960417, 11.63369792, ..., 10.67872708,
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a>        10.92211667, 11.28629167],
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a>       ...,
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>       [-2.92944375, -4.69852083, -3.56942708, ..., -3.54002292,
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a>        -3.56225833, -4.10433333],
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>       [-3.77319375, -3.30789583, -1.94442708, ..., -2.88377292,
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>        -3.26538333, -3.91683333],
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>       [-5.00756875, -4.01102083, -4.55380208, ..., -4.57127292,
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>        -3.12475833, -3.40120833]], shape=(6800, 350)),
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>                  fs=25000000.0,
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a>                  x_step=0.0005,
+</span><span id="__span-2-16"><a id="__codelineno-2-16" name="__codelineno-2-16" href="#__codelineno-2-16"></a>                  y_step=None,
+</span><span id="__span-2-17"><a id="__codelineno-2-17" name="__codelineno-2-17" href="#__codelineno-2-17"></a>                  t_delay=4e-05,
+</span><span id="__span-2-18"><a id="__codelineno-2-18" name="__codelineno-2-18" href="#__codelineno-2-18"></a>                  f_low=0,
+</span><span id="__span-2-19"><a id="__codelineno-2-19" name="__codelineno-2-19" href="#__codelineno-2-19"></a>                  f_high=inf,
+</span><span id="__span-2-20"><a id="__codelineno-2-20" name="__codelineno-2-20" href="#__codelineno-2-20"></a>                  wave_vel=(np.float64(1480.0),),
+</span><span id="__span-2-21"><a id="__codelineno-2-21" name="__codelineno-2-21" href="#__codelineno-2-21"></a>                  layer_thick=(inf,))
+</span></code></pre></div>
+<p>The dataset consists of 350 ultrasound measurements ("A-scans"), each 6800 samples long.
+The time sampling rate is 25 MHz and the spatial sampling ("step size") is 0.5 mm. A
+measurement delay of 40 microseconds was applied from pulse transmission to start of
+recording. The data corresponds to a single water layer with wave velocity 1480 m/s, and
+unspecified thickness (not relevant for single layers). </p>
+<p>Create a PhaseShiftMigration object, using some of the properties from the dataset, but
+overriding the f_low and f_high parameters (lower and upper edges of transducer
+passband). Initialization includes transforming the raw data to the Fourier domain.</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># Create PSM object</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="n">psm</span> <span class="o">=</span> <span class="n">PhaseShiftMigration</span><span class="p">(</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>    <span class="n">raw_data</span><span class="o">=</span><span class="n">mat_dataset</span><span class="o">.</span><span class="n">raw_data</span><span class="p">,</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>    <span class="n">fs</span><span class="o">=</span><span class="n">mat_dataset</span><span class="o">.</span><span class="n">fs</span><span class="p">,</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>    <span class="n">f_low</span><span class="o">=</span><span class="mf">0.4e6</span><span class="p">,</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a>    <span class="n">f_high</span><span class="o">=</span><span class="mf">2.5e6</span><span class="p">,</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>    <span class="n">x_step</span><span class="o">=</span><span class="n">mat_dataset</span><span class="o">.</span><span class="n">x_step</span><span class="p">,</span>  <span class="c1"># type:ignore</span>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a>    <span class="n">t_delay</span><span class="o">=</span><span class="n">mat_dataset</span><span class="o">.</span><span class="n">t_delay</span><span class="p">,</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a>    <span class="n">wave_velocities</span><span class="o">=</span><span class="n">mat_dataset</span><span class="o">.</span><span class="n">wave_vel</span><span class="p">,</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="p">)</span>
+</span></code></pre></div>
+<p>Display the raw data amplitude (calculated using Hilbert transform), using the
+<code>plot_us_image</code> utility function. The image scene contains 4 point scatterers (steel
+wires) that have been laterally "smeared" into hyperbolas. </p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># Display raw data</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="n">plot_us_image</span><span class="p">(</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>    <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">hilbert</span><span class="p">(</span><span class="n">psm</span><span class="o">.</span><span class="n">raw_data</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)),</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a>    <span class="n">x_val</span><span class="o">=</span><span class="n">psm</span><span class="o">.</span><span class="n">x_vec</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>    <span class="n">y_val</span><span class="o">=</span><span class="n">psm</span><span class="o">.</span><span class="n">time_vec</span> <span class="o">*</span> <span class="mf">1e6</span><span class="p">,</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Raw data (2D B-scan)&quot;</span><span class="p">,</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a>    <span class="n">x_label</span><span class="o">=</span><span class="s2">&quot;Lateral position [mm]&quot;</span><span class="p">,</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a>    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Time [µs]&quot;</span><span class="p">,</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a>    <span class="n">min_db</span><span class="o">=-</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a>    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><img src="graphics/python_quickstart_raw_image.png" width="600"></p>
+<p>Then focus the data using phase shift migration:</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># Run migration (focus image)</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="n">images</span><span class="p">,</span> <span class="n">z_vecs</span> <span class="o">=</span> <span class="n">psm</span><span class="o">.</span><span class="n">phase_shift_migrate</span><span class="p">()</span>
+</span></code></pre></div>
+<p>... and plot the focused image, using the same utility function as above. Note the
+change of vertical coordinates from time to depth (mm).</p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># Plot focused image</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">plot_us_image</span><span class="p">(</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    <span class="n">images</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a>    <span class="n">x_val</span><span class="o">=</span><span class="n">psm</span><span class="o">.</span><span class="n">x_vec</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>    <span class="n">y_val</span><span class="o">=</span><span class="n">z_vecs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">,</span>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a>    <span class="n">min_db</span><span class="o">=-</span><span class="mi">40</span><span class="p">,</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a>    <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">),</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;PSM focused image&quot;</span><span class="p">,</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">x_label</span><span class="o">=</span><span class="s2">&quot;Lateral position [mm]&quot;</span><span class="p">,</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">y_label</span><span class="o">=</span><span class="s2">&quot;Depth [mm]&quot;</span><span class="p">,</span>
+</span><span id="__span-6-11"><a id="__codelineno-6-11" name="__codelineno-6-11" href="#__codelineno-6-11"></a><span class="p">)</span>
+</span></code></pre></div>
+<p><img src="graphics/python_quickstart_focused_image.png" width="600"></p>
 
 
 
