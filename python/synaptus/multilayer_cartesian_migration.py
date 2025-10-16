@@ -292,6 +292,9 @@ class PhaseShiftMigration(MultilayerCartesianPulseEchoData):
             list[NDArray]: A list of 2D or 3D NumPy arrays (depending on self.ndim), where each array
                 represents the migrated image for a corresponding subsurface layer. The images are
                 absolute-valued and cropped to the original spatial dimensions.
+            list[np.ndarray]: A list of 1D NumPy arrays, where each array contains the z coordinate
+                values (in meters) corresponding to the depths of each image. Note that
+                the resolution is not the same in each layer, as it depends on the local wave velocity.
 
         Notes:
             - The method assumes that self.wavefield, self.wave_velocities, self.layer_thicknesses,
@@ -467,6 +470,9 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
         images = []
         z_vecs = []
 
+        # Create variable for z coordinate of top of current layer
+        layer_top_z = 0.0
+
         # Iterate over each layer, creating focused images and migrating between layer interfaces
         for wave_velocity, layer_index in zip(
             self.wave_velocities, range(len(self.layer_thicknesses))
@@ -486,8 +492,9 @@ class MultilayerOmegaKMigration(MultilayerCartesianPulseEchoData):
             images.append(layer_image)
 
             # Create and save z coordinate vector for this layer
-            layer_z_vec = np.arange(layer_nz) * dz
+            layer_z_vec = np.arange(layer_nz) * dz + layer_top_z
             z_vecs.append(layer_z_vec)
+            layer_top_z += self.layer_thicknesses[layer_index]
 
             # Migrate wavefield to next layer
             interface_wavefield = self.z_shift_wavefield(
